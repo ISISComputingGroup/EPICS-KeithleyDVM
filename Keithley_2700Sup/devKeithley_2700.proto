@@ -16,15 +16,90 @@ ReplyTimeout = 2000;
 
 ###################################################
 # Get functions
+
+# <clist> (e.g. @101: %d)
+# clist = @SCH 
+# S = slot number (1 or 2)
+# CH = switching module channel number
+# @101,203 = slot 1, channel 1 AND slot 2, channel 3
+# @101:110 = slot 1, channel1 to channel10
+
+
+# Resistance = two ohms/wire resistance
+# FResistance = four ohms/wire resistance
+# 
 ###################################################
+
+
 
 getIDN {
     out "*IDN?";
     #Read no more that 39 chars (EPICS limit)
     in "%/(.{0,39})/";
-    ExtraInput = Ignore;
 }
 
+# empty buffer of readings (TRACE CLEAR)
+# in emulator this would empty the buffer
+# does this link to a pv..?
+clearBuffer{
+    out "TRAC:CLE";
+}
+
+# Select RESistance function
+# // ADD @101 CHANNEL THING?
+setFResistanceFunc{
+    out "FUNC '%{RES|FRES}', (@101:%d)";
+}
+
+# buffer source: raw, calculated or none
+setBufferFeedSource{
+	out "TRAC:FEED %{SENS|CALC|NONE}"
+}
+
+getBufferFeedSource{	
+	out "TRAC:FEED?";
+	in "%{SENS|CALC|NONE}"
+}
+
+setBufferAutoClearStatus {
+   out "TRAC:CLE:AUTO %{ON|OFF}";
+}
+
+# /// Query state of buffer auto-clear (ON/OFF)
+getBufferAutoClearStatus {
+   out "TRAC:CLE:AUTO?";
+   in "%{ON|OFF}";
+}
+
+# Returns buffer location of next reading
+getNextBufferReadingLoc {
+    ExtraInput = Ignore;
+    out "TRAC:NEXT?";
+    in "%d";
+}
+
+# returns mem available (in bytes), number of bytes in use
+
+getBufferMemory {
+    ExtraInput = Ignore;
+    out "TRAC:FREE?";
+    in "%d,%(\$1)d";
+}
+
+# Select buffer control mode (NEVer, NEXT, or ALWays)
+# next enables buffer, always places buffer into continuous filling mode
+# never disable buffer operation
+setBufferControl{
+	out "TRAC:FEED:CONT %{NEV|NEXT|ALW}";
+}
+
+getBufferControl{
+    out "TRAC:FEED:CONT?";
+    in "%{NEV|NEXT|ALW}";
+}
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # /// Query Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
 getSource{
 	ExtraInput = Ignore;
@@ -45,17 +120,9 @@ getScanState{
 	in "%{NONE|INT}";
 }
 
-getBufferControl{
-    ExtraInput = Ignore;
-    out "TRAC:FEED:CONT?";
-    in "%{NEV|NEXT|ALW}";
-}
 
-getBufferFeed{
-	ExtraInput = Ignore;	
-	out "TRAC:FEED?";
-	in "%{SENS|CALC|NONE}"
-}
+
+
 
 getBufferSize{
     ExtraInput = Ignore;
@@ -71,12 +138,7 @@ getSampleCount{
 	in "%d";	
 }
 
-# /// Query state of buffer auto-clear (ON/OFF)
-getBufferState{
-   ExtraInput = Ignore;
-   out "TRAC:CLE:AUTO?";
-   in "%{ON|OFF}";
-}
+
 
 # /// Query continuous initiation
 getInitState{
@@ -119,16 +181,13 @@ getDataElements{
     in "%#s";
 }
 
+# Specify elements for TRACe:DATA:SEL response: READing, CHANnel, UNITSs, RNUMber, TSTamp 
+# >>>>>>>>> Can you pass through multiples values of %{READ|CHAN|TST} ?
 setDataElements{
     out "FORM:ELEM %s,%s,%s";
 }
 
-getBufferStats{
-    ExtraInput = Ignore;
-    out "TRAC:FREE?";
-    in "%#s";
 
-}
 
 getFrequencyMeasurment{
     ExtraInput = Ignore;
@@ -136,15 +195,11 @@ getFrequencyMeasurment{
     in "%(\$1)d" ;
 }
 
-getNextBufferReading{
-    ExtraInput = Ignore;
-    out "TRAC:NEXT?";
-    in "%d";
-}
 
+
+# TRACe DATA SELected (from start point(1) + count(2) )
 getReadingsRange{
-    #out "TRAC:DATA:SEL? %(\$1)d,%(\$2)d";
-    out "TRAC:DATA:SEL?";
+    out "TRAC:DATA:SEL? %(\$1),%(\$2)";
     in "%#s";
 }
 
@@ -181,15 +236,8 @@ setScanState{
 	out "ROUT:SCAN:LSEL %{NONE|INT}";
 }
 
-# /// Select buffer control mode (NEVer, NEXT, or ALWays)
-setBufferControl{
-	out "TRAC:FEED:CONT %{NEV|NEXT|ALW}";
-}
 
-# /// Select Source of Readings SENSe, CALCulate or NONE
-setBufferFeed{
-	out "TRAC:FEED %{SENS|CALC|NONE}"
-}
+
 
 # /// Specify size of buffer
 setBufferSize{
@@ -201,9 +249,7 @@ setSampleCount{
 	out "SAMP:COUN %d";
 }
 
-setBufferState {
-   out "TRAC:CLE:AUTO %{ON|OFF}";
-}
+
 
 # /// Enable or disable continuous initiation
 setInitState{
@@ -232,11 +278,6 @@ emptyQueue{
     out "SYST:CLE";
 }
 
-setFourWireResistance{
-    out "FUNC:FRES, (\@101:%(\$1)d)";
-}
 
-clearBuffer{
-    out "TRAC:CLE";
-}
+
 
