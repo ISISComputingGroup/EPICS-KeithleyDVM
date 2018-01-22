@@ -47,11 +47,11 @@ clearBuffer{
 
 # Select RESistance function
 # // ADD @101 CHANNEL THING?
-setFResistanceFunc{
+setResistanceMode{
     out "FUNC '%{RES|FRES}', (@101:%d)";
 }
 
-# buffer source: raw, calculated or none
+# buffer source: raw, calculated or none (none disables buffer storage)
 setBufferFeedSource{
 	out "TRAC:FEED %{SENS|CALC|NONE}"
 }
@@ -98,32 +98,14 @@ getBufferControl{
     in "%{NEV|NEXT|ALW}";
 }
 
-
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# /// Query Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
-getSource{
-	ExtraInput = Ignore;
-	out "TRIG:SOUR?";
-	in "%{IMM|TIM|MAN|BUS|EXT}";
+# TRACe DATA SELected (from start point(1) + count(2) )
+getBuffReadRange{
+    out "TRAC:DATA:SEL? %(\$1)d,%(\$2)d";  
+    in "%s";
 }
 
-# /// Query state of delay
-getDelayState {
-   ExtraInput = Ignore;
-   out "TRIG:DEL:AUTO?";
-   in "%{ON|OFF}";
-}
-
-getScanState{
-	ExtraInput = Ignore;
-	out "ROUT:SCAN:LSEL?";
-	in "%{NONE|INT}";
-}
-
-
-
-
-
+# size of buffer between 2 and 55000, default 100
+# useable when buffer auto:clear enabled (when disabled, defaults to 55,000)
 getBufferSize{
     ExtraInput = Ignore;
     out "TRAC:POIN?";
@@ -131,152 +113,13 @@ getBufferSize{
 
 }
 
-# /// Query State of Scan
-getSampleCount{
-	ExtraInput = Ignore;
-	out "SAMP:COUN?";
-	in "%d";	
-}
-
-
-
-# /// Query continuous initiation
-getInitState{
-	ExtraInput = Ignore;
-	out "INIT:CONT?";
-	in "%{ON|OFF}";
-}
-
-getTimeStamp{
-    ExtraInput = Ignore;
-	out "TRAC:TST:FORM?";
-    in "%{ABS|DELT}"
-}
-
-getResistanceRate{
-    ExtraInput = Ignore;
-	out "FRES:NPLC?";
-    in "%f";
-}
-
-getResistanceDigits{
-    ExtraInput = Ignore;
-	out "FRES:DIG?";
-    in  "%d,%(\$1)d";
-}
-
-# ///Set # of digits for 4 Ohms <n> = 4-7 (comeback)
-setResistanceDigits{
-	out "FRES:DIG %d, (\@101:%(\$1)d)";
-}
-
-getAutoRange{
-    ExtraInput = Ignore;
-    out "FRES:RANG:AUTO?";
-    in "%{ON|OFF},%d";
-}
-
-getDataElements{
-    out "FORM:ELEM?";
-    in "%#s";
-}
-
-# Specify elements for TRACe:DATA:SEL response: READing, CHANnel, UNITSs, RNUMber, TSTamp 
-# >>>>>>>>> Can you pass through multiples values of %{READ|CHAN|TST} ?
-setDataElements{
-    out "FORM:ELEM %s,%s,%s";
-}
-
-
-
-getFrequencyMeasurment{
-    ExtraInput = Ignore;
-    out ":FUNC FRES?";
-    in "%(\$1)d" ;
-}
-
-
-
-# TRACe DATA SELected (from start point(1) + count(2) )
-getReadingsRange{
-    out "TRAC:DATA:SEL? %(\$1),%(\$2)";
-    in "%#s";
-}
-
-MeasureFRESMode{
-    out ":MEAS:FRES?";
-    in "%f";
-}
-MeasureDCVoltageMode{
-    out ":MEAS:VOLT:DC?";
-    in "%f";
-}
-
-MeasureDCCurrentMode{
-    out ":MEAS:CURR:DC?";
-    in "%f";
-}
-
-#######################################################
-# Set functions
-#######################################################
-
-# ///Select Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
-setSource{
-	out "TRIG:SOUR %{IMM|TIM|MAN|BUS|EXT}";
-}
-
-# /// Enables or disable auto delay
-setDelayState {
-   out "TRIG:DEL:AUTO %{ON|OFF}";
-}
-
-# /// Enable or Disable Scan
-setScanState{
-	out "ROUT:SCAN:LSEL %{NONE|INT}";
-}
-
-
-
-
 # /// Specify size of buffer
 setBufferSize{
 	out "TRAC:POIN %d";
 }
 
-# /// Set Sample Count (1 to 55000)
-setSampleCount{
-	out "SAMP:COUN %d";
-}
 
-
-
-# /// Enable or disable continuous initiation
-setInitState{
-	out "INIT:CONT %{ON|OFF}";
-}
-
-# /// Select Timestamp format
-setTimeStamp{
-	out "TRAC:TST:FORM %{ABS|DELT}";
-}
-
-# /// Set Rate for 4 Ohms in PLCs 
-setResistanceRate{
-	out "FRES:NPLC %f";
-}
-
-
-
-setAutoRange{
-    out "FRES:RANG:AUTO %{ON|OFF}, (\@101:%d)";
-}
-
-
-
-emptyQueue{
-    out "SYST:CLE";
-}
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 
