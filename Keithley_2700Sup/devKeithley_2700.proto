@@ -118,6 +118,47 @@ setBufferSize{
 	out "TRAC:POIN %d";
 }
 
+# timestamp format - ABSolute or DELTa defailt abs
+# changing time stamp clears buffer
+# time stamp only included in readings if specified in form:elems
+setTimeStamp {
+	out "TRAC:TST:FORM %{ABS|DELT}";
+}
+
+getTimeStamp{
+    ExtraInput = Ignore;
+	out "TRAC:TST:FORM?";
+    in "%{ABS|DELT}"
+}
+
+# set auto delay on/off
+setTriggerDelayMode {
+   out "TRIG:DEL:AUTO %{ON|OFF}";
+}
+
+# /// Query state of delay
+getTriggerDelayMode {
+   ExtraInput = Ignore;
+   out "TRIG:DEL:AUTO?";
+   in "%{ON|OFF}";
+}
+
+
+#  Enable or disable continuous initiation
+# rst default is off
+setInitState{
+	out "INIT:CONT %{ON|OFF}";
+}
+
+# /// Query continuous initiation
+getInitState{
+	ExtraInput = Ignore;
+	out "INIT:CONT?";
+	in "%{ON|OFF}";
+}
+
+
+
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
