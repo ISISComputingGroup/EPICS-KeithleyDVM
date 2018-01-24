@@ -169,6 +169,18 @@ getSampleCount{
 	in "%d";	
 }
 
+#  Query Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
+getControlSource{
+	ExtraInput = Ignore;
+	out "TRIG:SOUR?";
+	in "%{IMM|TIM|MAN|BUS|EXT}";
+}
+# Select Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
+setControlSource{
+	out "TRIG:SOUR %{IMM|TIM|MAN|BUS|EXT}";
+}
+
+
 
 
 
