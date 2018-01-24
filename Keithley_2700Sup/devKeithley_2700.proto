@@ -150,11 +150,23 @@ setInitState{
 	out "INIT:CONT %{ON|OFF}";
 }
 
-# /// Query continuous initiation
+# Query continuous initiation
 getInitState{
 	ExtraInput = Ignore;
 	out "INIT:CONT?";
 	in "%{ON|OFF}";
+}
+
+# Set Sample Count (1 to 55000)
+# default is 1
+setSampleCount{
+	out "SAMP:COUN %d";
+}
+
+getSampleCount{
+	ExtraInput = Ignore;
+	out "SAMP:COUN?";
+	in "%d";	
 }
 
 
