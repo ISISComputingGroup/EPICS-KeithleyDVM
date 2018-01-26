@@ -38,6 +38,12 @@ getIDN {
     in "%/(.{0,39})/";
 }
 
+
+# clear messages from error queue
+clearSystemErrors{
+    out ":SYST:CLE";
+}
+
 # empty buffer of readings (TRACE CLEAR)
 # in emulator this would empty the buffer
 # does this link to a pv..?
@@ -45,10 +51,10 @@ clearBuffer{
     out "TRAC:CLE";
 }
 
-# Select RESistance function
+# set measurement function
 # // ADD @101 CHANNEL THING?
-setResistanceMode{
-    out "FUNC '%{RES|FRES}', (@101:%d)";
+setMeasurement {
+    out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@101:210)";
 }
 
 # buffer source: raw, calculated or none (none disables buffer storage)
@@ -169,11 +175,7 @@ getSampleCount{
 	in "%d";	
 }
 
-#  Query Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
-getControlSource{
-	ExtraInput = Ignore;
-	out "TRIG:SOUR?";
-	in "%{IMM|TIM|MAN|BUS|EXT}";
+
 }
 # Select Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
 setControlSource{
@@ -182,14 +184,30 @@ setControlSource{
 
 # Specify elements for TRACe:DATA:SEL response: READing, CHANnel, UNITSs, RNUMber, TSTamp 
 # >>>>>>>>> Can you pass through multiples values of %{READ|CHAN|TST} ?
-setDataReadChanTst{
+setDataElements{
     out "FORM:ELEM READ, CHAN, TST";
 }
 
 setDataReadChanTstUnitRnum {
-	out "FORM ELEM READ, CHAN, TST. UNIT, TST";
+	out "FORM ELEM READ, CHAN, TST, UNIT, TST";
 }
 
+# set auto range on/off (it selects best range to measure signal)
+
+setAutoRange {
+    out "FRES:RANG:AUTO %{ON|OFF}, (\@101:210)";
+}
+
+# number of digits for f-resistance (4-7)
+setFResDigits {
+	out ":FRES:DIG %d, (\@101:210)"
+}
+
+# set number of f-resistance plc cycles (higher = longer reading time,
+# default = 5.0)
+setFResistancePlcRate{
+	out ":FRES:NPLC %f";
+}
 
 
 
