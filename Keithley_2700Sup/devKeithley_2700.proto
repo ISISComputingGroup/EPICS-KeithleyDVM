@@ -62,20 +62,18 @@ setBufferFeedSource{
 	out "TRAC:FEED %{SENS|CALC|NONE}"
 }
 
-getBufferFeedSource{	
-	out "TRAC:FEED?";
-	in "%{SENS|CALC|NONE}"
+# Select buffer control mode (NEVer, NEXT, or ALWays)
+# next enables buffer, always places buffer into continuous filling mode
+# never disable buffer operation
+setBufferControl{
+	out "TRAC:FEED:CONT %{NEV|NEXT|ALW}";
 }
+
 
 setBufferAutoClearStatus {
    out "TRAC:CLE:AUTO %{ON|OFF}";
 }
 
-# /// Query state of buffer auto-clear (ON/OFF)
-getBufferAutoClearStatus {
-   out "TRAC:CLE:AUTO?";
-   in "%{ON|OFF}";
-}
 
 # Returns buffer location of next reading
 getNextBufferReadingLoc {
@@ -92,17 +90,7 @@ getBufferMemory {
     in "%d,%(\$1)d";
 }
 
-# Select buffer control mode (NEVer, NEXT, or ALWays)
-# next enables buffer, always places buffer into continuous filling mode
-# never disable buffer operation
-setBufferControl{
-	out "TRAC:FEED:CONT %{NEV|NEXT|ALW}";
-}
 
-getBufferControl{
-    out "TRAC:FEED:CONT?";
-    in "%{NEV|NEXT|ALW}";
-}
 
 # TRACe DATA SELected (from start point(1) + count(2) )
 getBuffReadRange{
@@ -112,14 +100,7 @@ getBuffReadRange{
 
 # size of buffer between 2 and 55000, default 100
 # useable when buffer auto:clear enabled (when disabled, defaults to 55,000)
-getBufferSize{
-    ExtraInput = Ignore;
-    out "TRAC:POIN?";
-    in "%d";
 
-}
-
-# /// Specify size of buffer
 setBufferSize{
 	out "TRAC:POIN %d";
 }
@@ -129,12 +110,6 @@ setBufferSize{
 # time stamp only included in readings if specified in form:elems
 setTimeStamp {
 	out "TRAC:TST:FORM %{ABS|DELT}";
-}
-
-getTimeStamp{
-    ExtraInput = Ignore;
-	out "TRAC:TST:FORM?";
-    in "%{ABS|DELT}"
 }
 
 # set auto delay on/off
@@ -207,6 +182,11 @@ setFResDigits {
 # default = 5.0)
 setFResistancePlcRate{
 	out ":FRES:NPLC %f";
+}
+
+# enable/disable scan
+setScanState{
+	out "ROUT:SCAN:LSEL %{INT|NONE}";
 }
 
 
