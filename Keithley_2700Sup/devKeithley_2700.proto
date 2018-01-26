@@ -136,7 +136,7 @@ setTriggerDelayMode {
    out "TRIG:DEL:AUTO %{ON|OFF}";
 }
 
-# /// Query state of delay
+# Query state of delay
 getTriggerDelayMode {
    ExtraInput = Ignore;
    out "TRIG:DEL:AUTO?";
@@ -178,6 +178,16 @@ getControlSource{
 # Select Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
 setControlSource{
 	out "TRIG:SOUR %{IMM|TIM|MAN|BUS|EXT}";
+}
+
+# Specify elements for TRACe:DATA:SEL response: READing, CHANnel, UNITSs, RNUMber, TSTamp 
+# >>>>>>>>> Can you pass through multiples values of %{READ|CHAN|TST} ?
+setDataReadChanTst{
+    out "FORM:ELEM READ, CHAN, TST";
+}
+
+setDataReadChanTstUnitRnum {
+	out "FORM ELEM READ, CHAN, TST. UNIT, TST";
 }
 
 
