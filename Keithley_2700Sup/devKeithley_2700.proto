@@ -93,7 +93,7 @@ getBufferMemory {
 
 
 # TRACe DATA SELected (from start point(1) + count(2) )
-getBuffReadRange{
+getBuffReadings{
     out "TRAC:DATA:SEL? %(\$1)d,%(\$2)d";  
     in "%s";
 }
@@ -184,10 +184,22 @@ setFResistancePlcRate{
 	out ":FRES:NPLC %f";
 }
 
-# enable/disable scan
+setScanChannels {
+	out "ROUT:SCAN (\@101:210)";
+}
+
+getScanChannels {
+	in "ROUT:SCAN?";
+}
+
+# enable/disable scan - internal or none
 setScanState{
 	out "ROUT:SCAN:LSEL %{INT|NONE}";
 }
+
+
+
+
 
 
 
