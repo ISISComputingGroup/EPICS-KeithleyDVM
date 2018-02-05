@@ -54,7 +54,7 @@ clearBuffer{
 # set measurement function
 # // ADD @101 CHANNEL THING?
 setMeasurement {
-    out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@(\$1):(\$2))";
+    out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@%(\$1:START)d:%(\$1:END)d)";
 }
 
 # buffer source: raw, calculated or none (none disables buffer storage)
@@ -184,11 +184,11 @@ setFResistancePlcRate{
 }
 
 setScanChannelsStart {
-	out "ROUT:SCAN (\@%d:\$1)";
+	out "ROUT:SCAN (\@%d:%(\$1:END)d)";
 }
 
 setScanChannelsEnd {
-	out "ROUT:SCAN (\@\$1:START:%d)";
+	out "ROUT:SCAN (\@%(\$1:START)d:%d)";
 }
 
 setScanChannels {
