@@ -54,7 +54,7 @@ clearBuffer{
 # set measurement function
 # // ADD @101 CHANNEL THING?
 setMeasurement {
-    out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@101:210)";
+    out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@(\$1):(\$2))";
 }
 
 # buffer source: raw, calculated or none (none disables buffer storage)
@@ -87,7 +87,7 @@ getNextBufferReadingLoc {
 getBufferMemory {
     ExtraInput = Ignore;
     out "TRAC:FREE?";
-    in "%d,%(\$1)d";
+    in "%d, %(\$1)d";
 }
 
 
@@ -123,7 +123,6 @@ getDelayState {
    out "TRIG:DEL:AUTO?";
    in "%{ON|OFF}";
 }
-
 
 #  Enable or disable continuous initiation
 # rst default is off
@@ -163,18 +162,19 @@ setDataElements{
 }
 
 setDataReadChanTstUnitRnum {
-	out "FORM ELEM READ, CHAN, TST, UNIT, TST";
+	out "FORM ELEM READ, CHAN, UNIT, RNUM, TST";
 }
 
 # set auto range on/off (it selects best range to measure signal)
 
 setAutoRange {
-    out "FRES:RANG:AUTO %{ON|OFF}, (\@101:210)";
+    out "FRES:RANG:AUTO %{ON|OFF}, (\@%(\$1:START)d:%(\$1:END)d)";
 }
 
 # number of digits for f-resistance (4-7)
 setFResDigits {
-	out ":FRES:DIG %d, (\@101:210)"
+	out ":FRES:DIG %d, (\@%(\$1:START)d:%(\$1:END)d)";
+
 }
 
 # set number of f-resistance plc cycles (higher = longer reading time,
@@ -183,28 +183,35 @@ setFResistancePlcRate{
 	out ":FRES:NPLC %f";
 }
 
-setScanChannels {
-	out "ROUT:SCAN (\@101:210)";
+setScanChannelsStart {
+	out "ROUT:SCAN (\@%d:\$1)";
 }
 
-getScanChannels {
-	in "ROUT:SCAN?";
+setScanChannelsEnd {
+	out "ROUT:SCAN (\@\$1:START:%d)";
+}
+
+setScanChannels {
+	# Set from calcout: A = CH:START, B = CH:END
+	out "ROUT:SCAN (\@%(A)d:%(B)d)";
+}
+
+getChannels {
+	out "ROUT:SCAN?";
+	in "%s";
+}
+
+getChannelsStart {
+	out "ROUT:SCAN?";
+	in "(\@%d:%*d)";
+}
+getChannelsEnd {
+	out "ROUT:SCAN?";
+	in "(\@%*d:%d)";
 }
 
 # enable/disable scan - internal or none
 setScanState{
 	out "ROUT:SCAN:LSEL %{INT|NONE}";
 }
-
-
-
-
-
-
-
-
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
 
