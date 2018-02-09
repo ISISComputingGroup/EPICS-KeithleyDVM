@@ -62,7 +62,7 @@ setBufferFeedSource{
 	out "TRAC:FEED %{SENS|CALC|NONE}"
 }
 
-# Select buffer control mode (NEVer, NEXT, or ALWays)
+# Select buffer control mode (NEVer, NEXT, or ALWays
 # next enables buffer, always places buffer into continuous filling mode
 # never disable buffer operation
 setBufferControl{
@@ -94,7 +94,7 @@ getBufferMemory {
 
 # TRACe DATA SELected (from start point(1) + count(2) )
 getBuffReadings{
-    out "TRAC:DATA:SEL? %(\$1)d,%(\$2)d";  
+    out "TRAC:DATA:SEL? %(\$1CURRENT)d,%(\$1COUNT)d";  
     in "%s";
 }
 
