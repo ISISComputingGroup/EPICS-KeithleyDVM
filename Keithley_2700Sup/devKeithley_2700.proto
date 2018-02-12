@@ -93,9 +93,11 @@ getBufferMemory {
 
 
 # TRACe DATA SELected (from start point(1) + count(2) )
+# reads comma separated values to waveform PV
 getBuffReadings{
-    out "TRAC:DATA:SEL? %(\$1CURRENT)d,%(\$1COUNT)d";  
-    in "%s";
+    separator=",";
+	out "TRAC:DATA:SEL? %(\$1CURRENT)d,%(\$1COUNT)d";  
+    in "%f";
 }
 
 # size of buffer between 2 and 55000, default 100
