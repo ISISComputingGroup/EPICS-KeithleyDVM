@@ -1,1 +1,2 @@
-function(parse_channel_data)
+function(parse_channel_readings)
+function(parse_channel_timestamps)
