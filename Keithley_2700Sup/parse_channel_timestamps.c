@@ -22,14 +22,14 @@
 *
 */
 
+long i;
+double *a;
+double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
+*vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
+
 static long parse_channel_timestamps(aSubRecord *prec) {
 	
 	// prec = INPA from keithley2700.db, BUFFER:READINGS - a waveform PV
-	
-    long i;
-    double *a;
-	double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
-	*vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
 	
     prec->pact = 1;
 

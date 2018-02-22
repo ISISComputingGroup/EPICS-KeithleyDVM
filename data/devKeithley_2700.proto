@@ -1,36 +1,11 @@
 ##################################################
 #
-# Protocol File
-#
 # Protocol file for Keithley 2700
-##################################################
-
-
-##################################################
-# General Settings
+#
 ##################################################
 
 Terminator = '\r\n';
 ReplyTimeout = 2000;
-
-
-###################################################
-# Get functions
-
-# <clist> (e.g. @101: %d)
-# clist = @SCH 
-# S = slot number (1 or 2)
-# CH = switching module channel number
-# @101,203 = slot 1, channel 1 AND slot 2, channel 3
-# @101:110 = slot 1, channel1 to channel10
-
-
-# Resistance = two ohms/wire resistance
-# FResistance = four ohms/wire resistance
-# 
-###################################################
-
-
 
 getIDN {
     out "*IDN?";
@@ -38,51 +13,40 @@ getIDN {
     in "%/(.{0,39})/";
 }
 
-
-# clear messages from error queue
+# Clear messages from error queue
 clearSystemErrors{
     out ":SYST:CLE";
 }
 
-# empty buffer of readings (TRACE CLEAR)
-# in emulator this would empty the buffer
-# does this link to a pv..?
+# Empty buffer of readings (TRACE CLEAR)
 clearBuffer{
     out "TRAC:CLE";
 }
 
-# set measurement function
-# // ADD @101 CHANNEL THING?
+# Set measurement function (HIFI Cryomag default: FRESistance)
 setMeasurement {
     out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@%(\$1:START)d:%(\$1:END)d)";
 }
 
-# buffer source: raw, calculated or none (none disables buffer storage)
+# Buffer source: raw, calculated or none (none disables buffer storage)
 setBufferFeedSource{
 	out "TRAC:FEED %{SENS|CALC|NONE}"
 }
 
-# Select buffer control mode (NEVer, NEXT, or ALWays
-# next enables buffer, always places buffer into continuous filling mode
-# never disable buffer operation
+# Select buffer control mode (NEVer, NEXT, or ALWays)
 setBufferControl{
 	out "TRAC:FEED:CONT %{NEV|NEXT|ALW}";
 }
-
 
 setBufferAutoClearStatus {
    out "TRAC:CLE:AUTO %{ON|OFF}";
 }
 
-
 # Returns buffer location of next reading
 getNextBufferReadingLoc {
-    ExtraInput = Ignore;
     out "TRAC:NEXT?";
     in "%d";
 }
-
-# returns mem available (in bytes), number of bytes in use
 
 getBufferMemory {
     ExtraInput = Ignore;
@@ -90,31 +54,28 @@ getBufferMemory {
     in "%d, %(\$1)d";
 }
 
-
-
 # TRACe DATA SELected (from start point(1) + count(2) )
-# reads comma separated values to waveform PV
+# Reads comma separated values to waveform PV BUFFER:READINGS
 getBuffReadings{
     separator=",";
 	out "TRAC:DATA:SEL? %(\$1CURRENT)d,%(\$1COUNT)d";  
     in "%f";
 }
 
-# size of buffer between 2 and 55000, default 100
-# useable when buffer auto:clear enabled (when disabled, defaults to 55,000)
-
+# Size of buffer between 2 and 55000, default 100
+# Useable when buffer auto:clear enabled (when disabled, defaults to 55,000)
 setBufferSize{
 	out "TRAC:POIN %d";
 }
 
-# timestamp format - ABSolute or DELTa defailt abs
-# changing time stamp clears buffer
-# time stamp only included in readings if specified in form:elems
+# Timestamp format - ABSolute or DELTa - default is ABS
+# Changing time stamp clears buffer
+# Time stamp only included in readings if specified in form:elems
 setTimeStamp {
 	out "TRAC:TST:FORM %{ABS|DELT}";
 }
 
-# set auto delay on/off
+# Set auto delay on/off
 setDelayState {
    out "TRIG:DEL:AUTO %{ON|OFF}";
 }
@@ -126,8 +87,6 @@ getDelayState {
    in "%{ON|OFF}";
 }
 
-#  Enable or disable continuous initiation
-# rst default is off
 setInitState{
 	out "INIT:CONT %{ON|OFF}";
 }
@@ -151,14 +110,12 @@ getSampleCount{
 	in "%d";	
 }
 
-
 # Select Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
 setControlSource{
 	out "TRIG:SOUR %{IMM|TIM|MAN|BUS|EXT}";
 }
 
-# Specify elements for TRACe:DATA:SEL response: READing, CHANnel, UNITSs, RNUMber, TSTamp 
-# >>>>>>>>> Can you pass through multiples values of %{READ|CHAN|TST} ?
+# Specify elements for TRACe:DATA:SEL response (READing, CHANnel, UNITSs, RNUMber, TSTamp)
 setDataElements{
     out "FORM:ELEM READ, CHAN, TST";
 }
@@ -167,8 +124,7 @@ setDataReadChanTstUnitRnum {
 	out "FORM ELEM READ, CHAN, UNIT, RNUM, TST";
 }
 
-# set auto range on/off (it selects best range to measure signal)
-
+# Set auto range on/off (On = device selects best range to measure signal)
 setAutoRange {
     out "FRES:RANG:AUTO %{ON|OFF}, (\@%(\$1:START)d:%(\$1:END)d)";
 }
@@ -176,10 +132,9 @@ setAutoRange {
 # number of digits for f-resistance (4-7)
 setFResDigits {
 	out ":FRES:DIG %d, (\@%(\$1:START)d:%(\$1:END)d)";
-
 }
 
-# set number of f-resistance plc cycles (higher = longer reading time,
+# Set number of f-resistance plc cycles (higher = longer reading time,
 # default = 5.0)
 setFResistancePlcRate{
 	out ":FRES:NPLC %f";
@@ -207,13 +162,13 @@ getChannelsStart {
 	out "ROUT:SCAN?";
 	in "(\@%d:%*d)";
 }
+
 getChannelsEnd {
 	out "ROUT:SCAN?";
 	in "(\@%*d:%d)";
 }
 
-# enable/disable scan - internal or none
+# Enable/disable scan - internal or none
 setScanState{
 	out "ROUT:SCAN:LSEL %{INT|NONE}";
 }
-

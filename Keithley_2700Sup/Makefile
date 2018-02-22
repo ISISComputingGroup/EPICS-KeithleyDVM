@@ -22,6 +22,5 @@ Keithley2700_LIBS += asubFunctions
 Keithley2700_SRCS += parse_channel_readings.c
 Keithley2700_SRCS += parse_channel_timestamps.c
 
-
 #=======================================
 include $(TOP)/configure/RULES

@@ -22,15 +22,14 @@
 *
 */
 
+long i;
+double *a;
+double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
+*vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
+	
 static long parse_channel_readings(aSubRecord *prec) {
 	
 	// prec = INPA from keithley2700.db, BUFFER:READINGS - a waveform PV
-	
-    long i;
-    double *a;
-	double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
-	*vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
-	
     prec->pact = 1;
 
     a = (double *)prec->a;
@@ -40,7 +39,7 @@ static long parse_channel_readings(aSubRecord *prec) {
     
 		// printf("\nReading: %f\t Timestamp: %f\tChannel: %f", (a[i], a[i+1], a[i+2]));
 		int channel = a[i+2];
-		double timestamp = a[i+1];
+		double reading = a[i+1];
 		
 		// Find the channel and add reading value to correct channel PV
 		switch(channel) {
