@@ -39,7 +39,7 @@ static long parse_channel_readings(aSubRecord *prec) {
     
 		// printf("\nReading: %f\t Timestamp: %f\tChannel: %f", (a[i], a[i+1], a[i+2]));
 		int channel = a[i+2];
-		double reading = a[i+1];
+		double reading = a[i];
 		
 		// Find the channel and add reading value to correct channel PV
 		switch(channel) {
