@@ -4,42 +4,45 @@
 #include "stdlib.h"
 #include <stdio.h>
 
-
 /*
-*	Keithley 2700 Data Parser
+*	Keithley 2700 Resistance Readings Parser
 *
 * 	Takes data from aSub record BUFFER:READINGS, finds the READING value and 
 *	puts it into the correct Channel. 
 *
 *	VALA (value A) = channel 101 reading = CHNL:101:READING
 *
+*	"Why are there two C scripts that do very similar things (parse_channel_timestamps.c 
+*	and parse_channel_readings.c)?"
+*
+*	Good question. aSub records have a limited number of outputs and so all of the channel
+* 	:READING and :TIMESTAMP PVs couldn't be outputs for one record. An alternate solution could 
+*	be to write the channel values to a waveform PV for each channel (e.g. CHNL:101:RAWVALS) and 
+*	have a calc record in each channel which splits the waveform into :READING and :TIMESTAMP PVs.
+*
 */
 
 static long parse_channel_readings(aSubRecord *prec) {
+	
+	// prec = INPA from keithley2700.db, BUFFER:READINGS - a waveform PV
+	
     long i;
-	// vala = VALUE A from .db
     double *a;
 	double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
 	*vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
-
-
-	int count; // how many values have we received?
-	double reading[3]; // a reading containing value, timestamp and channel
 	
     prec->pact = 1;
 
-	
-	// a = INPUT A
     a = (double *)prec->a;
 	
-    //for(i=0; i < (prec->noa); ++i)
 	i = 0;
 	while(a[i] > 0) {
     
 		// printf("\nReading: %f\t Timestamp: %f\tChannel: %f", (a[i], a[i+1], a[i+2]));
 		int channel = a[i+2];
-		double reading = a[i];
+		double timestamp = a[i+1];
 		
+		// Find the channel and add reading value to correct channel PV
 		switch(channel) {
 			case 101:
 				((double *)prec->vala)[0] = reading;	
@@ -105,21 +108,10 @@ static long parse_channel_readings(aSubRecord *prec) {
 				printf("\nNo Channel Found for reading: %f", reading);
 		}
 		
-		
-		// TO DO
-		// split into groups of 3
-		// check for channel
-		// assign to correct val variable
-		
-		// sets first element of CHNL:101:RAWDATA waveform
-		// How to access other elements?
-		//((double *)prec->vala)[0] = 99.88;
 		i=i+3;
     }
 
     prec->pact = 0;
-    //Debug message - prints to IOC
-    //printf("my_asub_routine called");
     return 0;
 }
 epicsRegisterFunction(parse_channel_readings);

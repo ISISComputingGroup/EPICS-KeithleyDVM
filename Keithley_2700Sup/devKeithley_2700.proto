@@ -23,6 +23,7 @@ clearBuffer{
     out "TRAC:CLE";
 }
 
+# Set measurement function (HIFI Cryomag default: FRESistance)
 setMeasurement {
     out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@%(\$1:START)d:%(\$1:END)d)";
 }
@@ -32,7 +33,7 @@ setBufferFeedSource{
 	out "TRAC:FEED %{SENS|CALC|NONE}"
 }
 
-# Select buffer control mode (NEVer, NEXT, or ALWays
+# Select buffer control mode (NEVer, NEXT, or ALWays)
 setBufferControl{
 	out "TRAC:FEED:CONT %{NEV|NEXT|ALW}";
 }
@@ -54,7 +55,7 @@ getBufferMemory {
 }
 
 # TRACe DATA SELected (from start point(1) + count(2) )
-# reads comma separated values to waveform PV
+# Reads comma separated values to waveform PV BUFFER:READINGS
 getBuffReadings{
     separator=",";
 	out "TRAC:DATA:SEL? %(\$1CURRENT)d,%(\$1COUNT)d";  
@@ -62,19 +63,19 @@ getBuffReadings{
 }
 
 # Size of buffer between 2 and 55000, default 100
-# useable when buffer auto:clear enabled (when disabled, defaults to 55,000)
+# Useable when buffer auto:clear enabled (when disabled, defaults to 55,000)
 setBufferSize{
 	out "TRAC:POIN %d";
 }
 
-# timestamp format - ABSolute or DELTa - default is ABS
-# changing time stamp clears buffer
-# time stamp only included in readings if specified in form:elems
+# Timestamp format - ABSolute or DELTa - default is ABS
+# Changing time stamp clears buffer
+# Time stamp only included in readings if specified in form:elems
 setTimeStamp {
 	out "TRAC:TST:FORM %{ABS|DELT}";
 }
 
-# set auto delay on/off
+# Set auto delay on/off
 setDelayState {
    out "TRIG:DEL:AUTO %{ON|OFF}";
 }
@@ -114,7 +115,7 @@ setControlSource{
 	out "TRIG:SOUR %{IMM|TIM|MAN|BUS|EXT}";
 }
 
-# Specify elements for TRACe:DATA:SEL response: READing, CHANnel, UNITSs, RNUMber, TSTamp 
+# Specify elements for TRACe:DATA:SEL response (READing, CHANnel, UNITSs, RNUMber, TSTamp)
 setDataElements{
     out "FORM:ELEM READ, CHAN, TST";
 }
@@ -133,7 +134,7 @@ setFResDigits {
 	out ":FRES:DIG %d, (\@%(\$1:START)d:%(\$1:END)d)";
 }
 
-# set number of f-resistance plc cycles (higher = longer reading time,
+# Set number of f-resistance plc cycles (higher = longer reading time,
 # default = 5.0)
 setFResistancePlcRate{
 	out ":FRES:NPLC %f";
@@ -167,7 +168,7 @@ getChannelsEnd {
 	in "(\@%*d:%d)";
 }
 
-# enable/disable scan - internal or none
+# Enable/disable scan - internal or none
 setScanState{
 	out "ROUT:SCAN:LSEL %{INT|NONE}";
 }
