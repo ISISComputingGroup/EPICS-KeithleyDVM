@@ -51,7 +51,7 @@ getNextBufferReadingLoc {
 getBufferMemory {
     ExtraInput = Ignore;
     out "TRAC:FREE?";
-    in "%d, %(\$1)d";
+    in "%d,%(\$1)d";
 }
 
 # TRACe DATA SELected (from start point(1) + count(2) )
@@ -84,7 +84,7 @@ setDelayState {
 getDelayState {
    ExtraInput = Ignore;
    out "TRIG:DEL:AUTO?";
-   in "%{ON|OFF}";
+   in "%d";
 }
 
 setInitState{
@@ -95,7 +95,7 @@ setInitState{
 getInitState{
 	ExtraInput = Ignore;
 	out "INIT:CONT?";
-	in "%{ON|OFF}";
+	in "%d";
 }
 
 # Set Sample Count (1 to 55000)
@@ -141,16 +141,16 @@ setFResistancePlcRate{
 }
 
 setScanChannelsStart {
-	out "ROUT:SCAN (\@%d:%(\$1:END)d)";
+	out "ROUT:SCAN (\@%d:110,201:%(\$1:END)d)";
 }
 
 setScanChannelsEnd {
-	out "ROUT:SCAN (\@%(\$1:START)d:%d)";
+	out "ROUT:SCAN (\@%(\$1:START)d:110,201:%d)";
 }
 
 setScanChannels {
 	# Set from calcout: A = CH:START, B = CH:END
-	out "ROUT:SCAN (\@%(A)d:%(B)d)";
+	out "ROUT:SCAN (\@%(A)d:110,201:%(B)d)";
 }
 
 getChannels {
@@ -160,12 +160,12 @@ getChannels {
 
 getChannelsStart {
 	out "ROUT:SCAN?";
-	in "(\@%d:%*d)";
+	in "(\@%d:110,201:%*d)";
 }
 
 getChannelsEnd {
 	out "ROUT:SCAN?";
-	in "(\@%*d:%d)";
+	in "(\@%*d:110,201:%d)";
 }
 
 # Enable/disable scan - internal or none
