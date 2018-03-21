@@ -68,11 +68,21 @@ setBufferSize{
 	out "TRAC:POIN %d";
 }
 
+getBufferSize{
+	out "TRAC:POIN?";
+	in "%d";
+}
+
 # Timestamp format - ABSolute or DELTa - default is ABS
 # Changing time stamp clears buffer
 # Time stamp only included in readings if specified in form:elems
 setTimeStamp {
 	out "TRAC:TST:FORM %{ABS|DELT}";
+}
+
+getTimeStamp {
+	out "TRAC:TST:FORM?";
+	in "%{ABS|DELT}"
 }
 
 # Set auto delay on/off
@@ -105,7 +115,6 @@ setSampleCount{
 }
 
 getSampleCount{
-	ExtraInput = Ignore;
 	out "SAMP:COUN?";
 	in "%d";	
 }
