@@ -150,16 +150,16 @@ setFResistancePlcRate{
 }
 
 setScanChannelsStart {
-	out "ROUT:SCAN (\@%d:110,201:%(\$1:END)d)";
+	out "ROUT:SCAN (\@%d:120,201:%(\$1:END)d)";
 }
 
 setScanChannelsEnd {
-	out "ROUT:SCAN (\@%(\$1:START)d:110,201:%d)";
+	out "ROUT:SCAN (\@%(\$1:START)d:120,201:%d)";
 }
 
 setScanChannels {
 	# Set from calcout: A = CH:START, B = CH:END
-	out "ROUT:SCAN (\@%(A)d:110,201:%(B)d)";
+	out "ROUT:SCAN (\@%(A)d:120,201:%(B)d)";
 }
 
 getChannels {
@@ -169,12 +169,12 @@ getChannels {
 
 getChannelsStart {
 	out "ROUT:SCAN?";
-	in "(\@%d:110,201:%*d)";
+	in "(\@%d:120,201:%*d)";
 }
 
 getChannelsEnd {
 	out "ROUT:SCAN?";
-	in "(\@%*d:110,201:%d)";
+	in "(\@%*d:120,201:%d)";
 }
 
 # Enable/disable scan - internal or none
