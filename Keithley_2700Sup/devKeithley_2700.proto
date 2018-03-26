@@ -10,7 +10,7 @@ ReplyTimeout = 2000;
 getIDN {
     out "*IDN?";
     #Read no more that 39 chars (EPICS limit)
-    in "%/(.{0,39})/";
+    in "KEITHLEY %*{INSTRUMENTS INC.,}%/(.{0,39})/";
 }
 
 # Clear messages from error queue
