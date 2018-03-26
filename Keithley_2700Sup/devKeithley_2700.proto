@@ -138,7 +138,7 @@ setAutoRange {
     out "FRES:RANG:AUTO %{ON|OFF}, (\@%(\$1:START)d:%(\$1:END)d)";
 }
 
-setAutoRange {
+getAutoRange {
     out "FRES:RANG:AUTO?";
 	in "%d"
 }
