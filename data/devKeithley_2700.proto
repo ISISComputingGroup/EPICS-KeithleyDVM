@@ -187,3 +187,8 @@ getChannelsEnd {
 setScanState{
 	out "ROUT:SCAN:LSEL %{INT|NONE}";
 }
+
+getScanState {
+	out "ROUT:SCAN:LSEL?";
+	in "%{NONE|INT}"
+}
