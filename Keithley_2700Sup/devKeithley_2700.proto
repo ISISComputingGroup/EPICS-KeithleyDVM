@@ -135,7 +135,8 @@ setDataReadChanTstUnitRnum {
 
 # Set auto range on/off (On = device selects best range to measure signal)
 setAutoRange {
-    out "FRES:RANG:AUTO %{ON|OFF}, (\@%(\$1:START)d:%(\$1:END)d)";
+    #out "FRES:RANG:AUTO %{ON|OFF}, (\@%(\$1:START)d:%(\$1:END)d)";
+    out "FRES:RANG:AUTO %{OFF|ON}";
 }
 
 getAutoRange {
