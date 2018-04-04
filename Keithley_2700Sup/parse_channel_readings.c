@@ -28,6 +28,7 @@ double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
 *vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
 	
 static long parse_channel_readings(aSubRecord *prec) {
+	printf("\nPARSE SCRIPT CALLED!");
 	
 	// prec = INPA from keithley2700.db, BUFFER:READINGS - a waveform PV
     prec->pact = 1;
