@@ -59,7 +59,7 @@ getBufferMemory {
 getBuffReadings{
     separator=",";
 	out "TRAC:DATA:SEL? %(\$1CURRENT)d,%(\$1COUNT)d";  
-    in "%s";
+    in "%f";
 }
 
 # Size of buffer between 2 and 55000, default 100
