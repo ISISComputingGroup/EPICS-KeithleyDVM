@@ -4,7 +4,8 @@
 #
 ##################################################
 
-Terminator = '\r\n';
+# Terminators set in st-common.cmd
+
 ReplyTimeout = 2000;
 
 getIDN {
@@ -40,6 +41,11 @@ setBufferControl{
 
 setBufferAutoClearStatus {
    out "TRAC:CLE:AUTO %{ON|OFF}";
+}
+
+getBufferAutoClearStatus {
+   out "TRAC:CLE:AUTO?";
+   in "%d";
 }
 
 # Returns buffer location of next reading
