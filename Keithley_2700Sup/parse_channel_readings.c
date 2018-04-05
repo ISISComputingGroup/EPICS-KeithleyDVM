@@ -26,36 +26,7 @@ long i;
 double *a;
 double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
 *vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
-int channel_array[20] = {101,102,103,104,105,106,107,108,109,110,201,202,203,204,205,206,207,208,209,210};
 
-int find_start_of_buffer_array(double a[]) {
-	// Find the correct element of the array to begin parsing
-	// Readings should be in the format of Reading - Timestamp - Channel
-	int x = 0;
-	int keep_going = 1;
-	for (int z = 0; z < 3; ++z) {
-		 for (int y = 0; y < 20; ++y) {
-			if (channel_array[y] == a[x+2]) {
-				// If the 'channel' reading (a[x+2]) is a valid channel value, return x 
-				// as the correct array position.
-				int keep_going = 0;
-				return x;
-				
-			}
-			else {
-				keep_going = 1;
-			}
-		}
-		if(keep_going == 0) {
-			break;
-		}
-		else {
-		++x;
-		}
-	}
-	printf("Valid Channel not found");
-	return -1;
-}
 	
 static long parse_channel_readings(aSubRecord *prec) {
 
@@ -64,11 +35,7 @@ static long parse_channel_readings(aSubRecord *prec) {
 
     a = (double *)prec->a;
 	
-	i = find_start_of_buffer_array(a);
-	if(i == -1) {
-		printf("Invalid Buffer reading, unable to parse");
-		return 0;
-	}
+	i = 0;
 	
 	while(a[i] > 0) {
 		
@@ -80,8 +47,7 @@ static long parse_channel_readings(aSubRecord *prec) {
 		// Find the channel and add reading value to correct channel PV
 		switch(channel) {
 			case 101:
-				((double *)prec->vala)[0] = reading;
-				
+				((double *)prec->vala)[0] = reading;				
 				break;
 			case 102:
 				((double *)prec->valb)[0] = reading;
@@ -141,9 +107,10 @@ static long parse_channel_readings(aSubRecord *prec) {
 				((double *)prec->valt)[0] = reading;
 				break;
 			default: 
-				printf("\nNo Channel Found for reading: %f", reading);
-		}
-		
+				printf("\n>>No Channel Found for reading: %f", reading);
+				i=i+1;
+				break;
+		}		
 		i=i+3;
     }
 
