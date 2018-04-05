@@ -37,7 +37,7 @@ static long parse_channel_readings(aSubRecord *prec) {
 	
 	i = 0;
 	
-	while(a[i] > 0) {
+	while((a[i] > 0) && (i < 100)) {
 		
 		//printf("\nReading: %f\t\t Timestamp: %f\t\tChannel: %f", (a[i], a[i+1], a[i+2]));
 		// Check for valid channel to start the parse

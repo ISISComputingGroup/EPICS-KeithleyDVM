@@ -36,7 +36,7 @@ static long parse_channel_timestamps(aSubRecord *prec) {
     a = (double *)prec->a;
 	
 	i = 0;
-	while(a[i] > 0) {
+	while((a[i] > 0) && (i < 100)) {
     
 		// printf("\nReading: %f\t Timestamp: %f\tChannel: %f", (a[i], a[i+1], a[i+2]));
 		int channel = a[i+2];
