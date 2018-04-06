@@ -3,6 +3,7 @@
 #include "aSubRecord.h"
 #include "stdlib.h"
 #include <stdio.h>
+#include <menuFtype.h>
 
 /*
 *	Keithley 2700 Resistance Readings Parser
@@ -21,15 +22,22 @@
 *	have a calc record in each channel which splits the waveform into :READING and :TIMESTAMP PVs.
 *
 */
-
-long i;
-double *a;
-double *vala, *valb,*valc,*vald,*vale,*valf,*valg,*valh,*vali,*valj,*valk,
-*vall,*valm,*valn,*valo,*valp,*valq,*valr,*vals,*valt;
-
+static void assign_value_to_pv(double *val, epicsEnum16 ftv, double reading) {
+	if(ftv != menuFtypeDOUBLE) {
+		printf("\nIncorrect input type, cannot process this value");
+	}
+	else {
+		((double *)val)[0] = reading;
+	}
+}
 	
-static long parse_channel_readings(aSubRecord *prec) {
+static long parse_buffer_readings(aSubRecord *prec, long offset) {
+	printf("\n\nCalling parse_buffer_readings");
 
+
+	long i;
+	double *a;
+	
 	// prec = INPA from keithley2700.db, BUFF:READ - a waveform PV
     prec->pact = 1;
 
@@ -37,17 +45,23 @@ static long parse_channel_readings(aSubRecord *prec) {
 	
 	i = 0;
 	
-	while((a[i] > 0) && (i < 100)) {
-		
+	while((a[i] > 0) && (i < (prec->noa)-3)) {
+		//printf("\nentering while loop");
 		//printf("\nReading: %f\t\t Timestamp: %f\t\tChannel: %f", (a[i], a[i+1], a[i+2]));
 		// Check for valid channel to start the parse
 
-		int channel = a[i+2];
-		double reading = a[i];
+		int channel = (int)(a[i+2]+0.5); // protection against rounding errors
+		
+		double reading = a[i+offset];
+		// if reading is not a double, throw error
+		
 		// Find the channel and add reading value to correct channel PV
 		switch(channel) {
 			case 101:
-				((double *)prec->vala)[0] = reading;				
+				printf("\nfound channel 101!");
+				printf("\ntrying to assign reading: %f", (reading));
+				((double *)prec->vala)[0] = reading;
+				//assign_value_to_pv(prec->vala, prec->ftva, reading);
 				break;
 			case 102:
 				((double *)prec->valb)[0] = reading;
@@ -117,4 +131,18 @@ static long parse_channel_readings(aSubRecord *prec) {
     prec->pact = 0;
     return 0;
 }
+
+static long parse_channel_readings(aSubRecord *prec) {
+	printf("\n\nCalling parse_channel_readings");
+	return parse_buffer_readings(prec, 0);
+}
+
+static long parse_channel_timestamps(aSubRecord *prec) {
+	printf("\n\nCalling parse_channel_timestamps");
+
+	return parse_buffer_readings(prec, 1);
+}
+
+
 epicsRegisterFunction(parse_channel_readings);
+epicsRegisterFunction(parse_channel_timestamps);

@@ -19,8 +19,7 @@ Keithley2700_LIBS += $(EPICS_BASE_IOC_LIBS)
 Keithley2700_LIBS += asyn utilities
 Keithley2700_LIBS += asubFunctions
 
-Keithley2700_SRCS += parse_channel_readings.c
-Keithley2700_SRCS += parse_channel_timestamps.c
+Keithley2700_SRCS += parse_buffer_readings.c
 
 #=======================================
 include $(TOP)/configure/RULES
