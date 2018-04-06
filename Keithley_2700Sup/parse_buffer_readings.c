@@ -6,23 +6,17 @@
 #include <menuFtype.h>
 
 /*
-*	Keithley 2700 Resistance Readings Parser
+*	Keithley 2700 Resistance Buffer Readings Parser
 *
-* 	Takes data from aSub record BUFFER:READINGS, finds the READING value and 
+* 	Takes data from aSub record BUFF:READ, finds the Reading and Timestamp value and 
 *	puts it into the correct Channel. 
 *
-*	VALA (value A) = channel 101 reading = CHNL:101:READING
+*	VALA (value A) = channel 101 reading = CHNL:101:READ etc
 *
-*	"Why are there two C scripts that do very similar things (parse_channel_timestamps.c 
-*	and parse_channel_readings.c)?"
-*
-*	Good question. aSub records have a limited number of outputs and so all of the channel
-* 	:READING and :TIMESTAMP PVs couldn't be outputs for one record. An alternate solution could 
-*	be to write the channel values to a waveform PV for each channel (e.g. CHNL:101:RAWVALS) and 
-*	have a calc record in each channel which splits the waveform into :READING and :TIMESTAMP PVs.
 *
 */
 static void assign_value_to_pv(double *val, epicsEnum16 ftv, double reading) {
+	// Check that the output type is a double
 	if(ftv != menuFtypeDOUBLE) {
 		printf("\nIncorrect input type, cannot process this value");
 	}
@@ -31,97 +25,92 @@ static void assign_value_to_pv(double *val, epicsEnum16 ftv, double reading) {
 	}
 }
 	
-static long parse_buffer_readings(aSubRecord *prec, long offset) {
-	printf("\n\nCalling parse_buffer_readings");
-
-
-	long i;
-	double *a;
+static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 	
+	/* 	'array_offset' refers to the index of the buffer array. This value will be 0 or 1, allowing 
+	* 	this script to parse the timestamp and reading value depending on the value of array_offset.
+	* 	a[i] = channel reading
+	* 	a[i+1] = channel timestamp
+	* 	a[i+2] = channel 
+	*/
+	
+	double *a;	
 	// prec = INPA from keithley2700.db, BUFF:READ - a waveform PV
     prec->pact = 1;
-
-    a = (double *)prec->a;
 	
-	i = 0;
+    a = (double *)prec->a;	
+	long i = 0;
 	
 	while((a[i] > 0) && (i < (prec->noa)-3)) {
-		//printf("\nentering while loop");
-		//printf("\nReading: %f\t\t Timestamp: %f\t\tChannel: %f", (a[i], a[i+1], a[i+2]));
-		// Check for valid channel to start the parse
 
-		int channel = (int)(a[i+2]+0.5); // protection against rounding errors
-		
-		double reading = a[i+offset];
-		// if reading is not a double, throw error
+		int channel = (int)(a[i+2]+0.5); // protection against double to int rounding errors		
+		double value = a[i+array_offset];
 		
 		// Find the channel and add reading value to correct channel PV
 		switch(channel) {
 			case 101:
-				printf("\nfound channel 101!");
-				printf("\ntrying to assign reading: %f", (reading));
-				((double *)prec->vala)[0] = reading;
-				//assign_value_to_pv(prec->vala, prec->ftva, reading);
+				//((double *)prec->vala)[0] = reading;
+				assign_value_to_pv(prec->vala, prec->ftva, value);
 				break;
 			case 102:
-				((double *)prec->valb)[0] = reading;
+				assign_value_to_pv(prec->valb, prec->ftva, value);
 				break;
 			case 103:
-				((double *)prec->valc)[0] = reading;
+				assign_value_to_pv(prec->valc, prec->ftva, value);
 				break;
 			case 104:
-				((double *)prec->vald)[0] = reading;
+				assign_value_to_pv(prec->vald, prec->ftva, value);
 				break;
 			case 105:
-				((double *)prec->vale)[0] = reading;
+				assign_value_to_pv(prec->vale, prec->ftva, value);
 				break;
 			case 106:
-				((double *)prec->valf)[0] = reading;
+				assign_value_to_pv(prec->valf, prec->ftva, value);
 				break;
 			case 107:
-				((double *)prec->valg)[0] = reading;
+				assign_value_to_pv(prec->valg, prec->ftva, value);
 				break;
 			case 108:
-				((double *)prec->valh)[0] = reading;
+				assign_value_to_pv(prec->valh, prec->ftva, value);
 				break;
 			case 109:
-				((double *)prec->vali)[0] = reading;
+				assign_value_to_pv(prec->vali, prec->ftva, value);
 				break;
 			case 110:
-				((double *)prec->valj)[0] = reading;
+				assign_value_to_pv(prec->valj, prec->ftva, value);
 				break;
 			case 201:
-				((double *)prec->valk)[0] = reading;
+				assign_value_to_pv(prec->valk, prec->ftva, value);
 				break;
 			case 202:
-				((double *)prec->vall)[0] = reading;
+				assign_value_to_pv(prec->vall, prec->ftva, value);
 				break;
 			case 203:
-				((double *)prec->valm)[0] = reading;
+				assign_value_to_pv(prec->valm, prec->ftva, value);
 				break;
 			case 204:
-				((double *)prec->valn)[0] = reading;
+				assign_value_to_pv(prec->valn, prec->ftva, value);
 				break;
 			case 205:
-				((double *)prec->valo)[0] = reading;
+				assign_value_to_pv(prec->valo, prec->ftva, value);
 				break;
 			case 206:
-				((double *)prec->valp)[0] = reading;
+				assign_value_to_pv(prec->valp, prec->ftva, value);
 				break;
 			case 207:
-				((double *)prec->valq)[0] = reading;
+				assign_value_to_pv(prec->valq, prec->ftva, value);
 				break;
 			case 208:
-				((double *)prec->valr)[0] = reading;
+				assign_value_to_pv(prec->valr, prec->ftva, value);
 				break;
 			case 209:
-				((double *)prec->vals)[0] = reading;
+				assign_value_to_pv(prec->vals, prec->ftva, value);
 				break;
 			case 210:
-				((double *)prec->valt)[0] = reading;
+				assign_value_to_pv(prec->valt, prec->ftva, value);
 				break;
 			default: 
-				printf("\n>>No Channel Found for reading: %f", reading);
+				printf("\n>>No Channel Found for value: %f", value);
 				i=i+1;
 				break;
 		}		
@@ -133,16 +122,12 @@ static long parse_buffer_readings(aSubRecord *prec, long offset) {
 }
 
 static long parse_channel_readings(aSubRecord *prec) {
-	printf("\n\nCalling parse_channel_readings");
 	return parse_buffer_readings(prec, 0);
 }
 
 static long parse_channel_timestamps(aSubRecord *prec) {
-	printf("\n\nCalling parse_channel_timestamps");
-
 	return parse_buffer_readings(prec, 1);
 }
-
 
 epicsRegisterFunction(parse_channel_readings);
 epicsRegisterFunction(parse_channel_timestamps);
