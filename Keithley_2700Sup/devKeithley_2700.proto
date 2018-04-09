@@ -25,13 +25,14 @@ clearBuffer{
 }
 
 # Set measurement function (HIFI Cryomag default: FRESistance)
+# We turn off internal scanning first
 setMeasurement {
-    out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@%(\$1:START)d:%(\$1:END)d)";
+    out ":FUNC '%{VOLT:DC|VOLT:AC|CURR:DC|CURR:AC|RES|FRES|CONT|FREQ|PER}'";
 }
 
 getMeasurement {
 	out ":FUNC?";
-	in "%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}";
+	in "\"%{VOLT:DC|VOLT:AC|CURR:DC|CURR:AC|RES|FRES|CONT|FREQ|PER}\"";
 }
 
 # Buffer source: raw, calculated or none (none disables buffer storage)
@@ -44,11 +45,11 @@ setBufferControl{
 	out "TRAC:FEED:CONT %{NEV|NEXT|ALW}";
 }
 
-setBufferAutoClearStatus {
+setBufferStatus {
    out "TRAC:CLE:AUTO %{OFF|ON}";
 }
 
-getBufferAutoClearStatus {
+getBufferStatus {
    out "TRAC:CLE:AUTO?";
    in "%d";
 }
