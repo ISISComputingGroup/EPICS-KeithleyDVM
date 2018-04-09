@@ -29,6 +29,11 @@ setMeasurement {
     out ":FUNC '%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@%(\$1:START)d:%(\$1:END)d)";
 }
 
+getMeasurement {
+	out ":FUNC?";
+	in "%{VOLT|VOLT:AC|CURR|CURR:AC|RES|FRES|CONT|FREQ|PER}";
+}
+
 # Buffer source: raw, calculated or none (none disables buffer storage)
 setBufferFeedSource{
 	out "TRAC:FEED %{SENS|CALC|NONE}"
@@ -195,5 +200,5 @@ setScanState{
 
 getScanState {
 	out "ROUT:SCAN:LSEL?";
-	in "%{NONE|INT}"
+	in "%{INT|NONE}"
 }
