@@ -9,7 +9,7 @@
 ReplyTimeout = 2000;
 
 getIDN {
-    out "*IDN?";
+    out "*IDN?";	
     #Read no more that 39 chars (EPICS limit)
     in "KEITHLEY %*{INSTRUMENTS INC.,}%/(.{0,39})/";
 }
@@ -27,7 +27,7 @@ clearBuffer{
 # Set measurement function (HIFI Cryomag default: FRESistance)
 # We turn off internal scanning first
 setMeasurement {
-    out ":FUNC '%{VOLT:DC|VOLT:AC|CURR:DC|CURR:AC|RES|FRES|CONT|FREQ|PER}'";
+    out ":FUNC '%{VOLT:DC|VOLT:AC|CURR:DC|CURR:AC|RES|FRES|CONT|FREQ|PER}', (\@%(\$1:RANGE)s)";
 }
 
 getMeasurement {
@@ -70,7 +70,7 @@ getBufferMemory {
 # Reads comma separated values to waveform PV BUFFER:READINGS
 getBuffReadings{
     separator=",";
-	out "TRAC:DATA:SEL? %(\$1CURRENT)d,%(\$1COUNT)d";  
+	out "TRAC:DATA:SEL? %(\$1CURR:LOC)d,%(\$1COUNT)d";  
     in "%f";
 }
 
@@ -157,7 +157,7 @@ getAutoRange {
 
 # number of digits for f-resistance (4-7)
 setFResDigits {
-	out ":FRES:DIG %d, (\@%(\$1:START)d:%(\$1:END)d)";
+	out ":FRES:DIG %d, (\@%(\$1:RANGE)s)";
 }
 
 # Set number of f-resistance plc cycles (higher = longer reading time,
@@ -176,7 +176,8 @@ setScanChannelsEnd {
 
 setScanChannels {
 	# Set from calcout: A = CH:START, B = CH:END
-	out "ROUT:SCAN (\@%(A)d:110,201:%(B)d)";
+	#out "ROUT:SCAN (\@%(A)d:110,201:%(B)d)";
+	out "ROUT:SCAN (\@%s)";
 }
 
 getChannels {
