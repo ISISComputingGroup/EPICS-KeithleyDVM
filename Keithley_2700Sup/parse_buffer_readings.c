@@ -16,7 +16,7 @@
 *
 */
 static void assign_value_to_pv(double *val, epicsEnum16 ftv, double reading) {
-	// Check that the output type is a double
+	// Check that the input type is a double
 	if(ftv != menuFtypeDOUBLE) {
 		printf("\nIncorrect input type, cannot process this value");
 	}
@@ -34,14 +34,16 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 	* 	a[i+2] = channel 
 	*/
 	
-	double *a;	
+	double *a;
+	// We have 3 values per channel - reading, timestamp and channel
+	const int channel_values_count = 3;
 	// prec = INPA from keithley2700.db, BUFF:READ - a waveform PV
     prec->pact = 1;
 	
     a = (double *)prec->a;	
 	long i = 0;
 	
-	while((a[i] > 0) && (i < (prec->noa)-3)) {
+	while((a[i] > 0) && (i < (prec->noa)-channel_values_count)) {
 
 		int channel = (int)(a[i+2]+0.5); // protection against double to int rounding errors		
 		double value = a[i+array_offset];
@@ -49,7 +51,6 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 		// Find the channel and add reading value to correct channel PV
 		switch(channel) {
 			case 101:
-				//((double *)prec->vala)[0] = reading;
 				assign_value_to_pv(prec->vala, prec->ftva, value);
 				break;
 			case 102:
@@ -114,7 +115,7 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 				i=i+1;
 				break;
 		}		
-		i=i+3;
+		i=i+channel_values_count;
     }
 
     prec->pact = 0;

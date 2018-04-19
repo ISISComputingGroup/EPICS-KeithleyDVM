@@ -176,7 +176,6 @@ setScanChannelsEnd {
 
 setScanChannels {
 	# Set from calcout: A = CH:START, B = CH:END
-	#out "ROUT:SCAN (\@%(A)d:110,201:%(B)d)";
 	out "ROUT:SCAN (\@%s)";
 }
 
@@ -202,5 +201,5 @@ setScanState{
 
 getScanState {
 	out "ROUT:SCAN:LSEL?";
-	in "%{INT|NONE}"
+	in "%{INT|NONE}";
 }
