@@ -22,6 +22,7 @@ Keithley2700_LIBS += asubFunctions
 #Keithley2700_LIBS += sseqFunctions
 
 Keithley2700_SRCS += parse_buffer_readings.c
+Keithley2700_SRCS += calculate_drift.c
 
 #=======================================
 include $(TOP)/configure/RULES
