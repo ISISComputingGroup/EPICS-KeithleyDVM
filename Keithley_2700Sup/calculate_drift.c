@@ -20,15 +20,15 @@ static void assign_value_to_pv(double *val, epicsEnum16 ftv, double reading) {
 		((double *)val)[0] = reading;
 	}
 }
-	
+
 static long calculate_drift(aSubRecord *prec) {
-	
-    prec->pact = 1;
-	
-    double *current_temp_pv = (double *)prec->a;	
-    double *previous_temp_pv = (double *)prec->b;	
-    double *current_time_pv = (double *)prec->c;	
-    double *previous_timeious_pv = (double *)prec->d;	
+
+  prec->pact = 1;
+
+  double *current_temp_pv = (double *)prec->a;
+  double *previous_temp_pv = (double *)prec->b;
+  double *current_time_pv = (double *)prec->c;
+  double *previous_timeious_pv = (double *)prec->d;
 	double *previous_drift_pv = (double *)prec->e;
 
 	// These PV references contain a single item but are still accessed as an array index.
@@ -46,7 +46,7 @@ static long calculate_drift(aSubRecord *prec) {
 	if (time_delta > 0) {
 		double change_over_time = 0;
 		previous_drift = previous_drift * 0.98;
-		
+
 		// If there is previous temperatura data
 		if (previous_temp > 0.0000001) {
 			change_over_time = ((temp_delta/time_delta)*60);
@@ -55,13 +55,13 @@ static long calculate_drift(aSubRecord *prec) {
 
 		// If change_over_time and previous_drift are valid values (not infinity or NaN)
 		if ((change_over_time == change_over_time) && (previous_drift != previous_drift)) { // checking for NaN
-			new_drift_value = change_over_time;			
+			new_drift_value = change_over_time;
 		}
 		else {
 			new_drift_value = change_over_time + previous_drift;
 		}
 	}
-		
+
 	// Assign current temperature to $(CHANNEL):TEMP:PREV
 	assign_value_to_pv(prec->valb, prec->ftvb, current_temp);
 	// Assign current timestamp to $(CHANNEL):TIME:PREV
