@@ -4,6 +4,9 @@
 #include "stdlib.h"
 #include <stdio.h>
 #include <menuFtype.h>
+#include <math.h>
+
+#define SMOOTHING_FACTOR 50
 
 /*
 *	Keithley 2700 Drift Calculator
@@ -11,6 +14,9 @@
 * 	Calculates drift value based on time and temperature data.
 *
 */
+
+double previous_proportion = 1 - (1/SMOOTHING_FACTOR);
+
 static void assign_value_to_pv(double *val, epicsEnum16 ftv, double reading) {
 	// Check that the input type is a double
 	if(ftv != menuFtypeDOUBLE) {
@@ -44,21 +50,21 @@ static long calculate_drift(aSubRecord *prec) {
 
 	// If we have a new timestamped value, calculate the drift
 	if (time_delta > 0) {
-		double change_over_time = 0;
-		previous_drift = previous_drift * 0.98;
+		double temp_change_over_time = 0;
+		previous_drift = previous_drift * previous_proportion;
 
 		// If there is previous temperatura data
-		if (previous_temp > 0.0000001) {
-			change_over_time = ((temp_delta/time_delta)*60);
+		if (previous_temp > 0) {
+			temp_change_over_time = ((temp_delta/time_delta)*60); // seconds in minute
 		}
-		change_over_time = change_over_time/50;
+		temp_change_over_time = temp_change_over_time/SMOOTHING_FACTOR;
 
-		// If change_over_time and previous_drift are valid values (not infinity or NaN)
-		if ((change_over_time == change_over_time) && (previous_drift != previous_drift)) { // checking for NaN
-			new_drift_value = change_over_time;
+		// If temp_change_over_time and previous_drift are valid values (not infinity or NaN)
+		if ((!isnan(temp_change_over_time)) && (isnan(previous_drift))) {
+			new_drift_value = temp_change_over_time;
 		}
 		else {
-			new_drift_value = change_over_time + previous_drift;
+			new_drift_value = temp_change_over_time + previous_drift;
 		}
 	}
 
