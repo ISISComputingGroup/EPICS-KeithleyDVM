@@ -9,7 +9,7 @@
 ReplyTimeout = 2000;
 
 getIDN {
-    out "*IDN?";	
+    out "*IDN?";
     #Read no more that 39 chars (EPICS limit)
     in "KEITHLEY %*{INSTRUMENTS INC.,}%/(.{0,39})/";
 }
@@ -51,7 +51,7 @@ setBufferStatus {
 
 getBufferStatus {
    out "TRAC:CLE:AUTO?";
-   in "%d";
+   in "%s";
 }
 
 # Returns buffer location of next reading
@@ -68,9 +68,9 @@ getBufferMemory {
 
 # TRACe DATA SELected (from start point(1) + count(2) )
 # Reads comma separated values to waveform PV BUFFER:READINGS
-getBuffReadings{
+getBufferReadings{
     separator=",";
-	out "TRAC:DATA:SEL? %(\$1CURR:LOC)d,%(\$1COUNT)d";  
+	  out "TRAC:DATA:SEL? %(\$1CURR:LOC)d,%(\$1BUFF:READ:END)d";
     in "%f";
 }
 
@@ -94,7 +94,7 @@ setTimeStamp {
 
 getTimeStamp {
 	out "TRAC:TST:FORM?";
-	in "%{ABS|DELT}"
+	in "%{ABS|DELT}";
 }
 
 # Set auto delay on/off
@@ -128,7 +128,7 @@ setSampleCount{
 
 getSampleCount{
 	out "SAMP:COUN?";
-	in "%d";		
+	in "%d";
 }
 
 # Select Control Source (IMMediate, TIMer, MANual, BUS, or EXTernal).
