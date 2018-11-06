@@ -23,6 +23,13 @@ Keithley2700_LIBS += asyn utilities
 Keithley2700_LIBS += asubFunctions
 Keithley2700_SRCS += parse_buffer_readings.c calculate_drift.c
 
+# Test Runner
+TESTPROD_HOST += runner
+runner_CPPFLAGS += -I$(CXXTEST)
+runner_SRCS += runner.cpp calculate_drift.c
+runner_LIBS += Keithley_2700
+runner_SYS_LIBS_WIN32 += wldap32
+
 #=======================================
 include $(TOP)/configure/RULES
 
