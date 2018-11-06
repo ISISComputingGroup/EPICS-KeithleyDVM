@@ -34,14 +34,14 @@ static long calculate_drift(aSubRecord *prec) {
   double *current_temp_pv = (double *)prec->a;
   double *previous_temp_pv = (double *)prec->b;
   double *current_time_pv = (double *)prec->c;
-  double *previous_timeious_pv = (double *)prec->d;
+  double *previous_time_pv = (double *)prec->d;
 	double *previous_drift_pv = (double *)prec->e;
 
 	// These PV references contain a single item but are still accessed as an array index.
 	double current_temp = current_temp_pv[0];
 	double previous_temp = previous_temp_pv[0];
 	double current_time = current_time_pv[0];
-	double previous_time = previous_timeious_pv[0];
+	double previous_time = previous_time_pv[0];
 	double previous_drift = previous_drift_pv[0];
 
 	double temp_delta = current_temp - previous_temp;
@@ -53,7 +53,7 @@ static long calculate_drift(aSubRecord *prec) {
 		double temp_change_over_time = 0;
 		previous_drift = previous_drift * previous_proportion;
 
-		// If there is previous temperatura data
+		// If there is previous temperature data
 		if (previous_temp > 0) {
 			temp_change_over_time = ((temp_delta/time_delta)*60); // seconds in minute
 		}
