@@ -1,5 +1,6 @@
 // basic_tests.h
 #include <cxxtest/TestSuite.h>
+#include "../drift_utils.h"
 
 class MyTestSuite1 : public CxxTest::TestSuite
 {

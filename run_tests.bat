@@ -4,7 +4,7 @@
 SET TOP="."
 
 :: run tests
-call Keithley_2700Sup\src\O.windows-x64\runner.exe
+call Keithley_2700Sup\O.windows-x64\runner.exe
 
 set keithley_2700_tests_failed=%errorlevel%
 

@@ -1,7 +1,7 @@
 #include <registryFunction.h>
 #include <epicsExport.h>
-#include "aSubRecord.h"
-#include "stdlib.h"
+#include <aSubRecord.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <menuFtype.h>
 
@@ -37,7 +37,7 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 	double *a;
 	// We have 3 values per channel - reading, timestamp and channel
 	const int channel_values_count = 3;
-	long i = 0;
+	unsigned long i = 0;
 	// prec = INPA from keithley2700.db, BUFF:READ - a waveform PV
     prec->pact = 1;
 
