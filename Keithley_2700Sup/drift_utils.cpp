@@ -1,10 +1,10 @@
 #include "drift_utils.h"
 #include <math.h>
-
+#include <stdio.h>
 
 #define SMOOTHING_FACTOR 50
 
-double previous_proportion = 1 - (1/SMOOTHING_FACTOR);
+double previous_proportion = 1.0 - (1.0/SMOOTHING_FACTOR);
 
 double drift_function_impl(double temp_delta, double time_delta, double previous_drift, 
                            double prev_temp)
@@ -20,9 +20,12 @@ double drift_function_impl(double temp_delta, double time_delta, double previous
 
     // If temp_change_over_time and previous_drift are valid values (not infinity or NaN)
     if ((!isnan(temp_change_over_time)) && (isnan(previous_drift))) {
-        return new_drift = temp_change_over_time;
+        new_drift = temp_change_over_time;
+        printf("Assigned new drift with nans to %f\n", new_drift);
     }
     else {
-        return new_drift = temp_change_over_time + previous_drift;
+        new_drift = temp_change_over_time + previous_drift;
+        printf("Assigned new drift without nans to %f\n", new_drift);
     }
+    return new_drift;
 }

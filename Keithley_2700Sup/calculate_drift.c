@@ -47,9 +47,12 @@ static long calculate_drift(aSubRecord *prec) {
 	double new_drift_value = 0;
 
 	// If we have a new timestamped value, calculate the drift
+	printf("Time delta: %f", time_delta);
 	if (time_delta > 0) {
 		new_drift_value = drift_function_impl(temp_delta, time_delta, previous_drift, previous_temp);
 	}
+
+	printf("\n\n\nNEW DRIFT VALUE IS %f\n\n\n\n", new_drift_value);
 
 	// Assign current temperature to $(CHANNEL):TEMP:PREV
 	assign_value_to_pv(prec->valb, prec->ftvb, current_temp);
