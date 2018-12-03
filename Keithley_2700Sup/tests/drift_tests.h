@@ -5,7 +5,7 @@
 #include <ios>
 #include "../drift_utils.h"
 
-#define TOLERANCE 1
+#define TOLERANCE 0.5
 
 class DriftTestSuite : public CxxTest::TestSuite {
     public:
@@ -13,12 +13,12 @@ class DriftTestSuite : public CxxTest::TestSuite {
         {
             // note that this test will not use the smoothing factor, because
             // prev_drift is 0
-            double expected_new_drift = -55.8816;
+            double expected_new_drift = -0.000666667;
             // GIVEN
             double prev_drift = 0;
-            double new_temp_delta = -2.3284;
-            double new_time_delta = 0.05;
-            double prev_temp = 93.8092;
+            double new_temp_delta = -0.16;
+            double new_time_delta = 360;
+            double prev_temp = 51.56;
 
             // WHEN
             double calculated_drift = drift_function_impl(new_temp_delta, new_time_delta,
@@ -30,12 +30,12 @@ class DriftTestSuite : public CxxTest::TestSuite {
         void test_GIVEN_prev_drift_WHEN_new_reading_added_THEN_new_drift_correct()
         {
             // Not that this test WILL use the smoothing factor
-            double expected_new_drift = -87.7367;
+            double expected_new_drift = -0.00135333;
             // GIVEN
-            double prev_drift = -54.4848;
-            double new_temp_delta = -1.4309;
-            double new_time_delta = 0.05;
-            double prev_temp = 91.4808; 
+            double prev_drift = -0.000666667;
+            double new_temp_delta = -0.25;
+            double new_time_delta = 360;
+            double prev_temp = 51.40; 
 
             // WHEN
             double calculated_drift = drift_function_impl(new_temp_delta, new_time_delta,
