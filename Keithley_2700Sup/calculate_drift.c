@@ -44,7 +44,7 @@ static long calculate_drift(aSubRecord *prec) {
 
 	double temp_delta = current_temp - previous_temp;
 	double time_delta = current_time - previous_time;
-	double new_drift_value = 0;
+	double new_drift_value = previous_drift;
 
 	// If we have a new timestamped value, calculate the drift
 	if (time_delta > 0) {
