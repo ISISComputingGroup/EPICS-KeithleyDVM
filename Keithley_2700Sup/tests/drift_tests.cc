@@ -2,6 +2,8 @@
 #include <ios>
 #include "../drift_utils.h"
 
+// Magic number test values are all taken from real historical run data
+
 #define TOLERANCE 0.1
 
 namespace {
