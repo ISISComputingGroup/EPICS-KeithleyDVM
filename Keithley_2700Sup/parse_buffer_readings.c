@@ -31,7 +31,7 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 	* 	this script to parse the timestamp and reading value depending on the value of array_offset.
 	* 	a[i] = channel reading
 	* 	a[i+1] = channel timestamp
-	* 	a[i+2] = channel
+	* 	a[i+2] = channel 
 	*/
 
 	double *a;
