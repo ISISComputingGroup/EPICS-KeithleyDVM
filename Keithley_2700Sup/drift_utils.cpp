@@ -18,7 +18,10 @@ double drift_function_impl(double temp_delta, double time_delta, double previous
     }
     temp_change_over_time = temp_change_over_time/SMOOTHING_FACTOR;
 
-    // If temp_change_over_time and previous_drift are valid values (not infinity or NaN)
+    // If temp_change_over_time IS a number AND the previous drift is NOT a number
+    // (i.e. this is the first reading) set the drift to equal only the new 
+    // temp_change_over_time, else it is the new temp_change_over_time summed with
+    // the previously calculated drift
     if ((!isnan(temp_change_over_time)) && (isnan(previous_drift))) {
         new_drift = temp_change_over_time;
         printf("Assigned new drift with nans to %f\n", new_drift);
