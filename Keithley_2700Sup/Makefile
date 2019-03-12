@@ -9,21 +9,14 @@ LIBRARY_IOC += Keithley2700
 DATA += devKeithley_2700.proto
 DBD += Keithley2700.dbd
 
-Keithley2700_DBD += asyn.dbd
-Keithley2700_DBD += utilities.dbd
-Keithley2700_DBD += asubFunctions.dbd
-Keithley2700_DBD += asSupport.dbd
-Keithley2700_DBD += stream.dbd
-Keithley2700_DBD += sseqRecord.dbd
 
 Keithley2700_LIBS += $(EPICS_BASE_IOC_LIBS)
-Keithley2700_LIBS += seqDev seq pv
 
-# aSub record
-Keithley2700_LIBS += asyn utilities
-Keithley2700_LIBS += asubFunctions
-Keithley2700_SRCS += parse_buffer_readings.c calculate_drift.c drift_utils.cpp
+Keithley2700_LIBS += gsl
+Keithley2700_SRCS += parse_buffer_readings.c calculate_drift.c drift_utils.cpp user1DTableSub.c
 
+USR_CFLAGS += -DGSL_DLL -DWIN32 /Od
+ 
 # googletest Test Runner
 
 SRC_DIRS += $(TOP)/Keithley_2700Sup/tests
