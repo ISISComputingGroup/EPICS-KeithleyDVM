@@ -15,7 +15,7 @@ Keithley2700_LIBS += $(EPICS_BASE_IOC_LIBS)
 Keithley2700_LIBS += gsl
 Keithley2700_SRCS += parse_buffer_readings.c calculate_drift.c drift_utils.cpp user1DTableSub.c
 
-USR_CFLAGS += -DGSL_DLL -DWIN32 /Od
+USR_CFLAGS += -DGSL_DLL -DWIN32
  
 # googletest Test Runner
 
