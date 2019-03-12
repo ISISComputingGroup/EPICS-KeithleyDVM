@@ -28,6 +28,10 @@
 #include <gsl/gsl_spline.h>
 #include <gsl/gsl_interp.h>
 
+#include <registryFunction.h>
+#include <epicsExport.h>
+
+
 // Struct may need to contain more things. TBD
 struct Spline_data_container {
     gsl_interp_accel *accelerator;
@@ -42,14 +46,25 @@ struct Spline_data_container {
         double x:           value to be evaluated by fit
         void ** dpvt:       pointer to record's dpvt field for storing data between calls       
 */
-double user1DTableSub(bool isInit, double x_data[], double y_data[], int len_arr, double x, void ** dpvt) {
+static double user1DTableSub(bool isInit, double x_data[], double y_data[], int len_arr, double x, void ** dpvt) {
 
     gsl_interp_accel *acc;
     gsl_spline *spline;
     struct Spline_data_container *spline_d_cont;
 
     if (isInit) {
-        spline_d_cont = (Spline_data_container *)malloc(sizeof(Spline_data_container));
+		// csm_read_1d_table automatically sorts arrays into ascending order. 
+		// y needs to be in original descending, so reverse 
+		double value_buffer = 0;
+		int j = len_arr - 1;
+		for (int i = 0; i < j; i++) {
+			value_buffer = y_data[i];
+			y_data[i] = y_data[j];
+			y_data[j] = value_buffer;
+			j--;
+		}
+
+        spline_d_cont = (struct Spline_data_container *)malloc(sizeof(struct Spline_data_container));
 
         acc = gsl_interp_accel_alloc();
         spline = gsl_spline_alloc(gsl_interp_cspline, len_arr);
@@ -65,11 +80,23 @@ double user1DTableSub(bool isInit, double x_data[], double y_data[], int len_arr
     }
     else { // is evaluating
         double val;
-        spline_d_cont = (Spline_data_container *) *dpvt;
+		double x_max;
+		double x_min;
 
-        val = gsl_spline_eval(spline_d_cont->spline, x, spline_d_cont->acc);
+        spline_d_cont = (struct Spline_data_container *) *dpvt;
+		// gsl will error on an extrapolation, since it's not designed to do this
+		// extract min and max from x arr. GSL won't crash now but errors are slightly abstracted away
+		x_max = spline_d_cont->spline->interp->xmax;
+		x_min = spline_d_cont->spline->interp->xmin;
+		
+		if (x > x_max || x < x_min)
+			val = 0; // 0 for error (since abs-zero is impossible anyway)
+		else
+			val = gsl_spline_eval(spline_d_cont->spline, x, spline_d_cont->accelerator);
         return val;
     }
 
     return 0;
 }
+
+epicsRegisterFunction(user1DTableSub);
