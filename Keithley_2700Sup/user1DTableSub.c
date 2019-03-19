@@ -1,11 +1,13 @@
-/*  For use with the cvt Record. This file produces a spline fit for a set of data passed to it via the SPEC field
+/*  03/2019 - dzd77598
+
+    For use with the cvt Record. This file produces a spline fit for a set of data passed to it via the SPEC field
     field in the cvt record.
 
-    The function must be named *** userFunc.c *** because there is no clean way (without significant restructure
+    The function must be named *** user1DTableSub.c *** because there is no clean way (without significant restructure
     of the cvt record) to pass in a user defined function name AND a clibration file to produce a fit from. 
     Therefore, the record (the backend cvtRecord.c) just looks for a function signature of a hardcoded name
 
-    userFunc
+    user1DTableSub
 
     and calls this. 
 
@@ -16,7 +18,7 @@
 
     The record backend produces a value by calling 
 
-    VAL = userFunc(x, y, &DPVT)
+    value = user1DTableSub(false, 0, 0, 0, pcvt->x, &pcvt->dpvt);
 
 */
 
