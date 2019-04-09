@@ -3,11 +3,11 @@ include $(TOP)/configure/CONFIG
 #=======================================
 
 # Install .dbd and .db files
-DATA += devKeithley_2700.proto
 
-DBD += Keithley_2700.dbd
-
+# Keithley 2700 Library 
 LIBRARY_IOC += Keithley2700
+DATA += devKeithley_2700.proto
+DBD += Keithley2700.dbd
 
 Keithley2700_DBD += asyn.dbd
 Keithley2700_DBD += utilities.dbd
@@ -17,11 +17,22 @@ Keithley2700_DBD += stream.dbd
 Keithley2700_DBD += sseqRecord.dbd
 
 Keithley2700_LIBS += $(EPICS_BASE_IOC_LIBS)
+Keithley2700_LIBS += seqDev seq pv
+
+# aSub record
 Keithley2700_LIBS += asyn utilities
 Keithley2700_LIBS += asubFunctions
-#Keithley2700_LIBS += sseqFunctions
+Keithley2700_SRCS += parse_buffer_readings.c calculate_drift.c drift_utils.cpp
 
-Keithley2700_SRCS += parse_buffer_readings.c
+# googletest Test Runner
+
+SRC_DIRS += $(TOP)/Keithley_2700Sup/tests
+
+TESTPROD_HOST += runner
+USR_CPPFLAGS += -I$(GTEST)/googletest/include
+runner_LIBS += gtest
+runner_SRCS += run_all_tests.cc drift_tests.cc
+runner_SRCS += drift_utils.cpp
 
 #=======================================
 include $(TOP)/configure/RULES

@@ -12,3 +12,7 @@ DIRS += $(wildcard *[Aa]pp)
 DIRS += $(wildcard ioc[Bb]oot)
 
 include $(TOP)/configure/RULES_TOP
+
+.PHONY: test
+test:
+	run_tests.bat

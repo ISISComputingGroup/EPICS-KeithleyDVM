@@ -4,6 +4,7 @@ ONCRPC=$(SUPPORT)/oncrpc/master
 SNCSEQ=$(SUPPORT)/seq/master
 UTILITIES=$(SUPPORT)/utilities/master
 ASUBFUNCTIONS=$(SUPPORT)/asubFunctions/master
+CXXTEST=$(EPICS_ROOT)/libraries/master/cxxtest/master
 # END OF AUTO GENERATED DEPENDENCIES
 
 # optional extra local definitions here
@@ -11,3 +12,4 @@ ASUBFUNCTIONS=$(SUPPORT)/asubFunctions/master
 
 include $(TOP)/../../../ISIS_CONFIG
 -include $(TOP)/../../../ISIS_CONFIG.$(EPICS_HOST_ARCH)
+GTEST=$(SUPPORT)/googletest/master
