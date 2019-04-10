@@ -24,7 +24,11 @@ Keithley2700_LIBS += asyn utilities
 Keithley2700_LIBS += asubFunctions
 Keithley2700_SRCS += parse_buffer_readings.c calculate_drift.c drift_utils.cpp
 
-# googletest Test Runner
+#=======================================
+# googleTest Runner
+# Does not currently build on build servers
+
+ifeq ($(findstring 10.0,$(VCVERSION)),)
 
 SRC_DIRS += $(TOP)/Keithley_2700Sup/tests
 
@@ -33,6 +37,8 @@ USR_CPPFLAGS += -I$(GTEST)/googletest/include
 runner_LIBS += gtest
 runner_SRCS += run_all_tests.cc drift_tests.cc
 runner_SRCS += drift_utils.cpp
+
+endif
 
 #=======================================
 include $(TOP)/configure/RULES
