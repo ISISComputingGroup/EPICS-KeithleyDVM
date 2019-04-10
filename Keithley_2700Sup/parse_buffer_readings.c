@@ -39,7 +39,6 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 	const int channel_values_count = 3;
 	unsigned long i = 0;
 	// prec = INPA from keithley2700.db, BUFF:READ - a waveform PV
-    prec->pact = 1;
 
     a = (double *)prec->a;
 
@@ -118,7 +117,6 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
 		i=i+channel_values_count;
     }
 
-    prec->pact = 0;
     return 0;
 }
 
