@@ -58,8 +58,8 @@ static double user1DTableSub(bool isInit, double x_data[], double y_data[], int 
 		// csm_read_1d_table automatically sorts arrays into ascending order. 
 		// y needs to be in original descending, so reverse 
 		double value_buffer = 0;
-		int j = len_arr - 1;
-		for (int i = 0; i < j; i++) {
+		int i, j = len_arr - 1;
+		for (i = 0; i < j; i++) {
 			value_buffer = y_data[i];
 			y_data[i] = y_data[j];
 			y_data[j] = value_buffer;
