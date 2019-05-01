@@ -26,11 +26,9 @@ double drift_function_impl(double temp_delta, double time_delta, double previous
     // the previously calculated drift
     if ((!isnan(temp_change_over_time)) && (isnan(previous_drift))) {
         new_drift = temp_change_over_time;
-        printf("Assigned new drift with nans to %f\n", new_drift);
     }
     else {
         new_drift = temp_change_over_time + previous_drift;
-        printf("Assigned new drift without nans to %f\n", new_drift);
     }
     return new_drift;
 }

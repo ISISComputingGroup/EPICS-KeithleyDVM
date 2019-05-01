@@ -4,7 +4,7 @@
 
 // Magic number test values are all taken from real historical run data
 
-#define TOLERANCE 0.1
+#define TOLERANCE 0.001
 
 namespace {
     TEST(DriftTests, test_GIVEN_no_prev_drift_WHEN_new_reading_added_THEN_new_drift_correct) {

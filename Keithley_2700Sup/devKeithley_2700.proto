@@ -51,7 +51,7 @@ setBufferStatus {
 
 getBufferStatus {
    out "TRAC:CLE:AUTO?";
-   in "%s";
+   in "%{0|1}";
 }
 
 # Returns buffer location of next reading
