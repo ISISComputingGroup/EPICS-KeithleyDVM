@@ -27,8 +27,6 @@ static void assign_value_to_pv(double *val, epicsEnum16 ftv, double reading) {
 
 static long calculate_drift(aSubRecord *prec) {
 
-	prec->pact = 1;
-
 	double *current_temp_pv = (double *)prec->a;
 	double *previous_temp_pv = (double *)prec->b;
 	double *current_time_pv = (double *)prec->c;
@@ -58,7 +56,6 @@ static long calculate_drift(aSubRecord *prec) {
 	// Assign new drift calculation to $(CHANNEL):DRIFT
 	assign_value_to_pv(prec->vala, prec->ftva, new_drift_value);
 
-    prec->pact = 0;
     return 0;
 }
 

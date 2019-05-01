@@ -2,6 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 
+#include <epicsMath.h> /* defines isnan() if it is not already present */
+
 #define SMOOTHING_FACTOR 50
 
 double previous_proportion = 1.0 - (1.0/SMOOTHING_FACTOR);
