@@ -18,13 +18,12 @@
 
     The record backend produces a value by calling 
 
-    value = user1DTableSub(false, 0, 0, 0, pcvt->x, &pcvt->dpvt);
+    value = user1DTableSub(0, 0, 0, 0, pcvt->x, &pcvt->dpvt);
 
 */
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spline.h>
@@ -41,14 +40,14 @@ struct Spline_data_container {
 };
 
 /*  args:
-        bool isInit:        flag passed by caller to determine if the fit is being initialised 
+        int isInit:        flag passed by caller to determine if the fit is being initialised 
         double x_data[]:    array of calibration data
         double y_data[]:    array of calibration data
         int len_arr:        length of x and y arrays
         double x:           value to be evaluated by fit
         void ** dpvt:       pointer to record's dpvt field for storing data between calls       
 */
-static double user1DTableSub(bool isInit, double x_data[], double y_data[], int len_arr, double x, void ** dpvt) {
+static double user1DTableSub(int isInit, double x_data[], double y_data[], int len_arr, double x, void ** dpvt) {
 
     gsl_interp_accel *acc;
     gsl_spline *spline;
