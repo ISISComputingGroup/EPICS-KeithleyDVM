@@ -12,7 +12,7 @@ DBD += Keithley2700.dbd
 Keithley2700_SRCS += parse_buffer_readings.c calculate_drift.c
 Keithley2700_SRCS += drift_utils.cpp user1DTableSub.c
 
-USR_CFLAGS_WIN32 += -DGSL_DLL -DWIN32
+include $(GSL)/gsl_flags.mak
 
 # aSub record
 Keithley2700_LIBS += asyn utilities
