@@ -11,6 +11,4 @@ DIRS += $(wildcard *[Ss]up)
 DIRS += $(wildcard *[Aa]pp)
 DIRS += $(wildcard ioc[Bb]oot)
 
-TEST_RUNNER = $(TOP)/Keithley_2700Sup/O.$(EPICS_HOST_ARCH)/runner
-
 include $(TOP)/configure/RULES_TOP
