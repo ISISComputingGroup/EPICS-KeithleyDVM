@@ -23,19 +23,17 @@ Keithley2700_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #=======================================
 # googleTest Runner
-# Does not currently build on build servers
 
 ifeq ($(findstring 10.0,$(VCVERSION)),)
 
 SRC_DIRS += $(TOP)/Keithley_2700Sup/tests
 
-TESTPROD_HOST += runner
-USR_CPPFLAGS += -I$(GTEST)/googletest/include
-runner_LIBS += gtest
-runner_SRCS += run_all_tests.cc drift_tests.cc
-runner_SRCS += drift_utils.cpp
-
+GTESTPROD_HOST += runner
+runner_SRCS += drift_tests.cc drift_utils.cpp
+GTESTS += runner
 endif
 
 #=======================================
 include $(TOP)/configure/RULES
+
+include $(GTEST)/cfg/compat.RULES_BUILD
