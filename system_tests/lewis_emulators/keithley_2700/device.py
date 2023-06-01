@@ -9,7 +9,9 @@ import threading
 MAX_READ = 1500
 MIN_READ = 1000
 
-
+# we can optionally add an overflow/nan to the timestamp to simulate
+# a keithley error condition when it returns e.g. 3.74727466E+03+9.9E37
+# for the timestamp. 9.9E37 is the keithley nan/overflow value.
 class BufferReading(object):
     def __init__(self, reading, timestamp, channel, add_nan_to_timestamp):
         self.reading = reading

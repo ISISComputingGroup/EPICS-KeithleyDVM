@@ -44,6 +44,7 @@ def _reset_drift_channels(class_object):
         class_object.ca.set_pv_value(pv, 0, sleep_after_set=0)
 
 
+# we can optionally use an overflow/nan timestamp to test an error condition
 def _generate_readings(num_readings_gen, time_between, nan_timestamp=False):
     min_r = 1000
     max_r = 2000
