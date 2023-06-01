@@ -50,7 +50,7 @@ static long parse_buffer_readings(aSubRecord *prec, long array_offset) {
     nelm = *(epicsInt32*)prec->b;
     if (nelm % channel_values_count != 0)
     {
-        printf("\nIncorrect number of values read %ld", nelm);
+        printf("\nIncorrect number of values read %ld - not multiple of %d", nelm, channel_values_count);
         return 1;
     }
 	while( i < (nelm - channel_values_count + 1) ) {

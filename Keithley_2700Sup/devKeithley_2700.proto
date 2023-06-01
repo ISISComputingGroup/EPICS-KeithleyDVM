@@ -68,10 +68,11 @@ getBufferMemory {
 
 # TRACe DATA SELected (from start point(1) + count(2) )
 # Reads comma separated values to waveform PV BUFFER:READINGS
+# replace strange overflow value like 3.74727466E+03+9.9E37    with    +9.9E37 
 getBufferReadings{
     separator=",";
-	  out "TRAC:DATA:SEL? %(\$1INDEX:START)d,%(\$1COUNT)d";
-    in "%f";
+    out "TRAC:DATA:SEL? %(\$1INDEX:START)d,%(\$1COUNT)d";
+    in "%#/[^,]+([+]9\.9E37)/\1/%f";
 }
 
 # Size of buffer between 2 and 55000, default 100
@@ -142,7 +143,7 @@ setDataElements{
 }
 
 setDataReadChanTstUnitRnum {
-	out "FORM ELEM READ, CHAN, UNIT, RNUM, TST";
+	out "FORM:ELEM READ, CHAN, UNIT, RNUM, TST";
 }
 
 # Set auto range on/off (On = device selects best range to measure signal)
