@@ -6,6 +6,8 @@ from utils.ioc_launcher import get_default_ioc_dir, IOCRegister
 from utils.test_modes import TestModes
 from utils.testing import get_running_lewis_and_ioc, skip_if_recsim, unstable_test
 
+from parameterized import parameterized
+
 DEVICE_PREFIX = "KHLY2700_01"
 
 IOCS = [
@@ -42,7 +44,8 @@ def _reset_drift_channels(class_object):
         class_object.ca.set_pv_value(pv, 0, sleep_after_set=0)
 
 
-def _generate_readings(num_readings_gen, time_between):
+# we can optionally use an overflow/nan timestamp to test an error condition
+def _generate_readings(num_readings_gen, time_between, nan_timestamp=False):
     min_r = 1000
     max_r = 2000
     start_time = 1
@@ -52,9 +55,12 @@ def _generate_readings(num_readings_gen, time_between):
         resistance = min_r + i
         while resistance > max_r:
             resistance = resistance - min_r
-        time_stamp = start_time + (i*time_between)
+        if nan_timestamp:
+            time_stamp = int(9.9E37)
+        else:
+            time_stamp = start_time + (i*time_between)
         channel = CHANNEL_NUMBERS[i % CHANNEL_COUNT]  # assign each generated reading to channel (read mod no of chnls)
-        readings.append("+" + str(resistance) + "," + str(channel) + ",+" + str(time_stamp))
+        readings.append("+" + str(resistance) + ",+" + str(time_stamp) + "," + str(channel))
 
     return readings
 
@@ -75,6 +81,7 @@ class SetUpTests(unittest.TestCase):
         self.ca.assert_that_pv_exists("IDN")
         if not IOCRegister.uses_rec_sim:
             self._lewis.backdoor_set_on_device("simulate_readings", False)
+            self._lewis.backdoor_set_on_device("add_nan_to_timestamp", False)
 
     def test_WHEN_scan_state_set_THEN_scan_state_matches_the_set_state(self):
         sample_data = {0: "INT", 1: "NONE"}
@@ -203,6 +210,7 @@ class BufferTests(unittest.TestCase):
         self.ca.assert_that_pv_is("BUFF:AUTOCLEAR", "ON")
         if not IOCRegister.uses_rec_sim:
             self._lewis.backdoor_set_on_device("simulate_readings", False)
+            self._lewis.backdoor_set_on_device("add_nan_to_timestamp", False)
         self.ca.set_pv_value("BUFF:CLEAR:SP", "")
 
     def _set_buffer_size(self, buff_size):
@@ -255,10 +263,12 @@ class BufferTests(unittest.TestCase):
         # AND
         self.ca.assert_that_pv_is("BUFF:CONTROLMODE", "ALW")
 
+    @parameterized.expand([False, True])
     @skip_if_recsim("Cannot use lewis backdoor in recsim")
-    def test_GIVEN_buffer_almost_full_WHEN_multiple_remaining_locations_written_to_THEN_correct_readings_returned(self):
+    def test_GIVEN_buffer_almost_full_WHEN_multiple_remaining_locations_written_to_THEN_correct_readings_returned(self, add_nan_to_timestamp):
         self._set_buffer_size(10)
-        reads = _generate_readings(15, 5)
+        self._lewis.backdoor_set_on_device("add_nan_to_timestamp", add_nan_to_timestamp)
+        reads = _generate_readings(15, 5, nan_timestamp=add_nan_to_timestamp)
         expected_reads = reads[7:10]
 
         _insert_reading(self, reads[:7])
@@ -275,10 +285,12 @@ class BufferTests(unittest.TestCase):
         # compare inserted reads with retrieved reads
         self.assertEqual(",".join(expected_reads).replace("+", ""), ",".join(retrieved_readings))
 
+    @parameterized.expand([False, True])
     @skip_if_recsim("Cannot use lewis backdoor in recsim")
-    def test_GIVEN_buffer_almost_full_WHEN_buffer_fills_and_overflows_THEN_correct_readings_returned(self):
+    def test_GIVEN_buffer_almost_full_WHEN_buffer_fills_and_overflows_THEN_correct_readings_returned(self, add_nan_to_timestamp):
         self._set_buffer_size(10)
-        reads = _generate_readings(15, 5)
+        self._lewis.backdoor_set_on_device("add_nan_to_timestamp", add_nan_to_timestamp)
+        reads = _generate_readings(15, 5, nan_timestamp=add_nan_to_timestamp)
         expected_read = reads[10]
 
         _insert_reading(self, reads[:7])
@@ -289,6 +301,7 @@ class BufferTests(unittest.TestCase):
         self.ca.assert_that_pv_is("BUFF:NEXT", 1)
 
         retrieved_readings = self.ca.get_pv_value("BUFF:READ")[:3]
+
         retrieved_readings = map(int, retrieved_readings)  # map from float to int
         retrieved_readings = map(str, retrieved_readings)  # map from int to str
         self.assertEqual(expected_read.replace("+", ""), ",".join(retrieved_readings))
@@ -302,6 +315,7 @@ class ChannelTests(unittest.TestCase):
         self.ca.assert_that_pv_is("BUFF:AUTOCLEAR", "ON")
         if not IOCRegister.uses_rec_sim:
             self._lewis.backdoor_set_on_device("simulate_readings", False)
+            self._lewis.backdoor_set_on_device("add_nan_to_timestamp", False)
         self.ca.set_pv_value("BUFF:CLEAR:SP", "")
 
     @skip_if_recsim("Cannot use lewis backdoor in recsim")
@@ -355,6 +369,7 @@ class DriftTests(unittest.TestCase):
         self.ca.set_pv_value("BUFF:CLEAR:SP", "")
         if not IOCRegister.uses_rec_sim:
             self._lewis.backdoor_set_on_device("simulate_readings", False)
+            self._lewis.backdoor_set_on_device("add_nan_to_timestamp", False)
 
     @skip_if_recsim("Cannot use lewis backdoor in recsim")
     def test_GIVEN_empty_buffer_WHEN_values_added_THEN_temp_AND_drift_correct(self, test_data=drift_test_data):

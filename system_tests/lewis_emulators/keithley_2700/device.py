@@ -9,12 +9,16 @@ import threading
 MAX_READ = 1500
 MIN_READ = 1000
 
-
+# we can optionally add an overflow/nan to the timestamp to simulate
+# a keithley error condition when it returns e.g. 3.74727466E+03+9.9E37
+# for the timestamp. 9.9E37 is the keithley nan/overflow value.
 class BufferReading(object):
-    def __init__(self, reading, timestamp, channel):
+    def __init__(self, reading, timestamp, channel, add_nan_to_timestamp):
         self.reading = reading
-        self.timestamp = timestamp
+        self.timestamp = str(timestamp)
         self.channel = channel
+        if add_nan_to_timestamp:
+            self.timestamp += "+9.9E37"
 
 
 @has_log
@@ -67,6 +71,7 @@ class SimulatedKeithley2700(StateMachineDevice):
         self.bytes_used = 0
         self.start_time = time.time()
         self.simulate_readings = True
+        self.add_nan_to_timestamp = False
         thread = threading.Thread(group=None, target=self._simulate_readings_thread)
         thread.daemon = True
         thread.start()
@@ -90,7 +95,7 @@ class SimulatedKeithley2700(StateMachineDevice):
             reading, timestamp, channel = item.split(",")
             if self.is_buffer_full() and self.buffer_autoclear_on:
                 self.clear_buffer()
-            self.buffer.append(BufferReading(reading, timestamp, channel))
+            self.buffer.append(BufferReading(reading, timestamp, channel, self.add_nan_to_timestamp))
 
     def check_buffer_data(self):
         """
