@@ -205,3 +205,7 @@ getScanState {
 	out "ROUT:SCAN:LSEL?";
 	in "%{INT|NONE}";
 }
+
+resetTime {
+    out "SYST:TST:REL:RES";
+}
