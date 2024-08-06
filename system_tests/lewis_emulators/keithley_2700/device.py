@@ -11,6 +11,7 @@ from .states import DefaultState
 MAX_READ = 1500
 MIN_READ = 1000
 
+
 # we can optionally add an overflow/nan to the timestamp to simulate
 # a keithley error condition when it returns e.g. 3.74727466E+03+9.9E37
 # for the timestamp. 9.9E37 is the keithley nan/overflow value.
@@ -64,10 +65,12 @@ class SimulatedKeithley2700(StateMachineDevice):
         """
         Initialize the device's attributes necessary for testing.
         """
-        self.idn = "KEITHLEY"               # Device name 
-        self.buffer = []                    # The buffer in which samples are stored
-        self.buffer_autoclear_on = False    # when false, new readings appended to old readings in buffer
-        self.buffer_size = 1000             # size of buffer which holds read data default 1000
+        self.idn = "KEITHLEY"  # Device name
+        self.buffer = []  # The buffer in which samples are stored
+        self.buffer_autoclear_on = (
+            False  # when false, new readings appended to old readings in buffer
+        )
+        self.buffer_size = 1000  # size of buffer which holds read data default 1000
         # The below attributes are not used but are needed for the stream interface
         self.bytes_available = 0
         self.bytes_used = 0
@@ -97,15 +100,19 @@ class SimulatedKeithley2700(StateMachineDevice):
             reading, timestamp, channel = item.split(",")
             if self.is_buffer_full() and self.buffer_autoclear_on:
                 self.clear_buffer()
-            self.buffer.append(BufferReading(reading, timestamp, channel, self.add_nan_to_timestamp))
+            self.buffer.append(
+                BufferReading(reading, timestamp, channel, self.add_nan_to_timestamp)
+            )
 
     def check_buffer_data(self):
         """
         Gets values contained in self.buffer
         :return: List of comma separated string representations of readings in the buffer
         """
-        return [",".join((reading.reading, reading.timestamp, reading.channel))
-                .encode("utf-8") for reading in self.buffer]
+        return [
+            ",".join((reading.reading, reading.timestamp, reading.channel)).encode("utf-8")
+            for reading in self.buffer
+        ]
 
     def clear_buffer(self):
         """
