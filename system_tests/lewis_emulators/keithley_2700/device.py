@@ -1,10 +1,12 @@
-from collections import OrderedDict
-from lewis.core.logging import has_log
-from .states import DefaultState
-from lewis.devices import StateMachineDevice
-from random import randint
-import time
 import threading
+import time
+from collections import OrderedDict
+from random import randint
+
+from lewis.core.logging import has_log
+from lewis.devices import StateMachineDevice
+
+from .states import DefaultState
 
 MAX_READ = 1500
 MIN_READ = 1000
