@@ -366,11 +366,13 @@ class BufferTests(unittest.TestCase):
         _insert_reading(self, reads[7:11])
         self.ca.assert_that_pv_is("BUFF:NEXT", 1)
 
-        retrieved_readings = self.ca.get_pv_value("BUFF:READ")[:3]
+        def passes_check(readings):
+            readings = readings[:3]
+            int_readings = map(int, readings)
+            str_readings = map(str, int_readings)
+            return expected_read.replace("+", "") == ",".join(str_readings)
 
-        retrieved_readings = map(int, retrieved_readings)  # map from float to int
-        retrieved_readings = map(str, retrieved_readings)  # map from int to str
-        self.assertEqual(expected_read.replace("+", ""), ",".join(retrieved_readings))
+        self.ca.assert_that_pv_value_causes_func_to_return_true("BUFF:READ", passes_check)
 
 
 class ChannelTests(unittest.TestCase):
