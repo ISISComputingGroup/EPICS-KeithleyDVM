@@ -66,7 +66,7 @@ def _generate_readings(num_readings_gen, time_between, nan_timestamp=False):
     return readings
 
 
-class Status(object):
+class Status:
     ON = "ON"
     OFF = "OFF"
 
@@ -110,8 +110,8 @@ class SetUpTests(unittest.TestCase):
     @skip_if_recsim("In rec sim this test fails")
     def test_WHEN_buffer_size_set_THEN_buffer_size_matches_the_set_state_AND_alarm_is_major(self):
         expected_alarm = "MAJOR"
-        sample_data = [-1, 0, 55001, 70000]
-        for sample_data in sample_data:
+        all_sample_data = [-1, 0, 55001, 70000]
+        for sample_data in all_sample_data:
             self.ca.assert_setting_setpoint_sets_readback(
                 sample_data, "BUFF:SIZE", expected_alarm=expected_alarm
             )
@@ -119,8 +119,8 @@ class SetUpTests(unittest.TestCase):
     @skip_if_recsim("In rec sim this test fails")
     def test_WHEN_buffer_size_set_THEN_buffer_size_matches_the_set_state_AND_alarm_is_none(self):
         expected_alarm = "NO_ALARM"
-        sample_data = [5500, 2]
-        for sample_data in sample_data:
+        all_sample_data = [5500, 2]
+        for sample_data in all_sample_data:
             self.ca.assert_setting_setpoint_sets_readback(
                 sample_data, "BUFF:SIZE", expected_alarm=expected_alarm
             )
@@ -246,7 +246,7 @@ class SetUpTests(unittest.TestCase):
             7: "FREQ",
             8: "PER",
         }
-        for measurement_enum, measurement_string in sample_data.items():
+        for measurement_string in sample_data.values():
             self.ca.assert_setting_setpoint_sets_readback(
                 measurement_string, "MEASUREMENT", expected_value=measurement_string
             )
@@ -458,7 +458,7 @@ class DriftTests(unittest.TestCase):
         self.ca.set_pv_value("BUFF:SIZE:SP", 1000)
         # GIVEN in setup
         # WHEN
-        for i in range(0, len(test_data)):
+        for i in range(len(test_data)):
             _insert_reading(self, [readings[i]])
             # THEN
             self.ca.assert_that_pv_is_number(
