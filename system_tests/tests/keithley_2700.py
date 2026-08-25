@@ -66,7 +66,7 @@ def _generate_readings(num_readings_gen, time_between, nan_timestamp=False):
     return readings
 
 
-class Status(object):
+class Status:
     ON = "ON"
     OFF = "OFF"
 
@@ -110,8 +110,8 @@ class SetUpTests(unittest.TestCase):
     @skip_if_recsim("In rec sim this test fails")
     def test_WHEN_buffer_size_set_THEN_buffer_size_matches_the_set_state_AND_alarm_is_major(self):
         expected_alarm = "MAJOR"
-        sample_data = [-1, 0, 55001, 70000]
-        for sample_data in sample_data:
+        all_sample_data = [-1, 0, 55001, 70000]
+        for sample_data in all_sample_data:
             self.ca.assert_setting_setpoint_sets_readback(
                 sample_data, "BUFF:SIZE", expected_alarm=expected_alarm
             )
@@ -119,8 +119,8 @@ class SetUpTests(unittest.TestCase):
     @skip_if_recsim("In rec sim this test fails")
     def test_WHEN_buffer_size_set_THEN_buffer_size_matches_the_set_state_AND_alarm_is_none(self):
         expected_alarm = "NO_ALARM"
-        sample_data = [5500, 2]
-        for sample_data in sample_data:
+        all_sample_data = [5500, 2]
+        for sample_data in all_sample_data:
             self.ca.assert_setting_setpoint_sets_readback(
                 sample_data, "BUFF:SIZE", expected_alarm=expected_alarm
             )
@@ -246,7 +246,7 @@ class SetUpTests(unittest.TestCase):
             7: "FREQ",
             8: "PER",
         }
-        for measurement_enum, measurement_string in sample_data.items():
+        for measurement_string in sample_data.values():
             self.ca.assert_setting_setpoint_sets_readback(
                 measurement_string, "MEASUREMENT", expected_value=measurement_string
             )
@@ -366,11 +366,13 @@ class BufferTests(unittest.TestCase):
         _insert_reading(self, reads[7:11])
         self.ca.assert_that_pv_is("BUFF:NEXT", 1)
 
-        retrieved_readings = self.ca.get_pv_value("BUFF:READ")[:3]
+        def passes_check(readings):
+            readings = readings[:3]
+            int_readings = map(int, readings)
+            str_readings = map(str, int_readings)
+            return expected_read.replace("+", "") == ",".join(str_readings)
 
-        retrieved_readings = map(int, retrieved_readings)  # map from float to int
-        retrieved_readings = map(str, retrieved_readings)  # map from int to str
-        self.assertEqual(expected_read.replace("+", ""), ",".join(retrieved_readings))
+        self.ca.assert_that_pv_value_causes_func_to_return_true("BUFF:READ", passes_check)
 
 
 class ChannelTests(unittest.TestCase):
@@ -456,7 +458,7 @@ class DriftTests(unittest.TestCase):
         self.ca.set_pv_value("BUFF:SIZE:SP", 1000)
         # GIVEN in setup
         # WHEN
-        for i in range(0, len(test_data)):
+        for i in range(len(test_data)):
             _insert_reading(self, [readings[i]])
             # THEN
             self.ca.assert_that_pv_is_number(
